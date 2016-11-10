@@ -19,6 +19,6 @@ public class TelegramHandler implements Listener {
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
         Message message = event.getMessage();
-        chat.sendMessage(String.format("Hi %s! I'm alive!", message.getSender().getFullName()));
+        chat.sendMessage(String.format("Hi %s! You said %s!", message.getSender().getFullName(), event.getCommand()));
     }
 }
