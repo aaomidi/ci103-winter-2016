@@ -64,7 +64,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.aaomidi.ftpclient.Main</mainClass>
+                            <mainClass>xyz.cardsagainsttelegram.CardsAgainstTelegram</mainClass>
                         </manifest>
                     </archive>
                     <outputDirectory>jar/</outputDirectory>
