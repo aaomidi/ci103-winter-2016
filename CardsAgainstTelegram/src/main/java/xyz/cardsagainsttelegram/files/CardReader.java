@@ -2,7 +2,9 @@ package xyz.cardsagainsttelegram.files;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.files.deckfile.DeckFile;
+import xyz.cardsagainsttelegram.handlers.PackRegister;
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,7 +20,7 @@ public class CardReader {
 
     private void readFiles() {
         try {
-            ClassLoader classLoader = getClass().getClassLoader();
+            ClassLoader classLoader = CardsAgainstTelegram.class.getClassLoader();
 
             String fileString = classLoader.getResource("official.json").getFile();
 
@@ -33,6 +35,8 @@ public class CardReader {
     private void readDeckFile(File file) throws Exception {
         FileReader reader = new FileReader(file);
         DeckFile dFile = gson.fromJson(reader, DeckFile.class);
+
+
     }
 
 }

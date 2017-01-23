@@ -1,13 +1,22 @@
 package xyz.cardsagainsttelegram.files.deckfile;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
+import xyz.cardsagainsttelegram.bean.Pack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RequiredArgsConstructor
+@Data
 public class DeckFile {
-    private final ArrayList<BlackDeckFile> blackCards;
+    // The list of Black cards, simply TEXT and PICK
+    private final ArrayList<BlackDeckInfo> blackCards;
+    // The list of strings as white cards
     private final ArrayList<String> whiteCards;
-    private final HashMap<String, DeckFile> map;
+    // Deck name, to Deck info
+    private final HashMap<String, DeckInfo> map;
+
+    public Pack convertToPack() {
+        // This will convert this json file into a useful Object
+        return null;
+    }
 }

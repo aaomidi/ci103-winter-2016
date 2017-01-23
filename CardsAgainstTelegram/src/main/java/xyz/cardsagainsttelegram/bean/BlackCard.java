@@ -1,9 +1,10 @@
 package xyz.cardsagainsttelegram.bean;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@Data
 public class BlackCard implements Card {
     @Getter
     private final CardType type = CardType.BLACK;
