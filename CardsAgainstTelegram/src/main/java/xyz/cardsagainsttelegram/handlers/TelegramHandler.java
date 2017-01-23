@@ -5,14 +5,16 @@ import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.Message;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
-import xyz.cardsagainsttelegram.files.deckfile.DeckFile;
+import xyz.cardsagainsttelegram.bean.BlackCard;
+import xyz.cardsagainsttelegram.bean.Pack;
+import xyz.cardsagainsttelegram.bean.WhiteCard;
 
 public class TelegramHandler implements Listener {
     private final TelegramBot bot;
 
     public TelegramHandler(String apiKey) {
         bot = TelegramBot.login(apiKey);
-        bot.startUpdates(false);
+        bot.startUpdates(true);
         bot.getEventsManager().register(this);
     }
 
@@ -21,5 +23,31 @@ public class TelegramHandler implements Listener {
         Chat chat = event.getChat();
         Message message = event.getMessage();
         chat.sendMessage(String.format("Hi %s!\n\tYour username is %s\n\tYou said %s %s!", message.getSender().getFullName(), message.getSender().getUsername(), event.getCommand(), event.getArgsString()));
-     }
+        if (event.getCommand().equalsIgnoreCase("packs")) {
+            StringBuilder sb = new StringBuilder("Registered packs:\n");
+            for (Pack p : PackRegister.getPacks()) {
+                sb.append(" - ").append(p.getPackName()).append("\n");
+            }
+            chat.sendMessage(sb.toString());
+        }
+        if (event.getCommand().equalsIgnoreCase("getWhite")) {
+            Pack p = PackRegister.getPack(event.getArgsString());
+            if (p == null) return;
+            StringBuilder sb = new StringBuilder("White cards for: ").append(p.getPackName()).append("\n");
+            for (WhiteCard card : p.getWhites()) {
+                sb.append(" - ").append(card.getText()).append("\n");
+            }
+            chat.sendMessage(sb.toString());
+        }
+
+        if (event.getCommand().equalsIgnoreCase("getBlacks")) {
+            Pack p = PackRegister.getPack(event.getArgsString());
+            if (p == null) return;
+            StringBuilder sb = new StringBuilder("Black cards for: ").append(p.getPackName()).append("\n");
+            for (BlackCard card : p.getBlacks()) {
+                sb.append(" - ").append(card.getText()).append("\n");
+            }
+            chat.sendMessage(sb.toString());
+        }
+    }
 }

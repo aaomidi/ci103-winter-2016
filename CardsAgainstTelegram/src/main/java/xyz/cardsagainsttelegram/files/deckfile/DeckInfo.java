@@ -1,12 +1,12 @@
 package xyz.cardsagainsttelegram.files.deckfile;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.List;
 
-@RequiredArgsConstructor
+@Data
 public class DeckInfo {
     private final String name;
-    private final ArrayList<Integer> black;
-    private final ArrayList<Integer> white;
+    private final List<Integer> black;
+    private final List<Integer> white;
 }

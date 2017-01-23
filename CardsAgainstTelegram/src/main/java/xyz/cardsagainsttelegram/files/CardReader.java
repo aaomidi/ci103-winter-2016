@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.files.deckfile.DeckFile;
-import xyz.cardsagainsttelegram.handlers.PackRegister;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.Map;
 
 public class CardReader {
     private final Gson gson;
@@ -33,10 +33,14 @@ public class CardReader {
     }
 
     private void readDeckFile(File file) throws Exception {
-        FileReader reader = new FileReader(file);
+        FileReader reader;
+
+        reader = new FileReader(file);
+        Map map = gson.fromJson(reader, Map.class);
+        reader = new FileReader(file);
         DeckFile dFile = gson.fromJson(reader, DeckFile.class);
 
-
+        dFile.register(map);
     }
 
 }
