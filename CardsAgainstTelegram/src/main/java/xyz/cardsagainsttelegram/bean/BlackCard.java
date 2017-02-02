@@ -7,8 +7,7 @@ import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 @Data
 public class BlackCard implements Card {
@@ -18,7 +17,7 @@ public class BlackCard implements Card {
     private final String text;
     @Getter
     private final int empty;
-    private transient Font font = new Font("Ubuntu", Font.PLAIN, 14);
+    private transient Font font = new Font("Helvetica", Font.PLAIN, 14);
 
     public File drawImage() {
         ClassLoader classLoader = CardsAgainstTelegram.class.getClassLoader();
@@ -47,10 +46,20 @@ public class BlackCard implements Card {
             e.printStackTrace();
         }
         return cardOutput;
+        //return bufferedImagetoIS(img);
     }
 
+    public InputStream bufferedImagetoIS(BufferedImage image) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", baos);
+            return new ByteArrayInputStream(baos.toByteArray());
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
     private void drawString(Graphics g, String text, int x, int y) {
-        int maxX = 210;
+        int maxX = 215;
 
         int printingX = x;
         int printingY = y;
@@ -59,7 +68,7 @@ public class BlackCard implements Card {
             int len = m.stringWidth(word);
             if (printingX + len > maxX) {
                 printingX = x; // Restore back to starting
-                printingY += m.getHeight();
+                printingY += m.getHeight() + 2;
             }
             g.drawString(word, printingX, printingY);
 

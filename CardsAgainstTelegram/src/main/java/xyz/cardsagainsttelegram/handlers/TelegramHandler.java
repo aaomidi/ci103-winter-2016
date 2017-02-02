@@ -51,8 +51,8 @@ public class TelegramHandler implements Listener {
             StringBuilder sb = new StringBuilder("Black cards for: ").append(p.getPackName()).append("\n");
             //int x = 0;
             for (BlackCard card : p.getBlacks()) {
-                File file = card.drawImage();
-                chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(file)).build());
+                File is = card.drawImage();
+                chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(is)).build());
                 //sb.append(" - ").append(card.getText()).append("\n");
             }
             //chat.sendMessage(sb.toString());
