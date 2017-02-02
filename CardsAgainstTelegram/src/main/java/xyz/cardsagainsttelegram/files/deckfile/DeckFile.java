@@ -39,6 +39,12 @@ public class DeckFile {
         PackRegister.registerPacks(list);
     }
 
+    /**
+     * Converts a Map object into a Deck Info File
+     *
+     * @param o
+     * @return
+     */
     private DeckInfo cToDF(Object o) {
         if (!(o instanceof Map)) {
             return null;
@@ -57,6 +63,12 @@ public class DeckFile {
         return new DeckInfo(name, black, white);
     }
 
+    /**
+     * Converts an Object list into an Integer list
+     *
+     * @param list
+     * @return
+     */
     private List<Integer> toIL(List<Object> list) {
         List<Integer> l = new ArrayList<>();
         for (Object o : list) {
