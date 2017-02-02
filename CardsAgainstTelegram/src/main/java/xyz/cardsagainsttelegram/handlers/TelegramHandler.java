@@ -49,15 +49,13 @@ public class TelegramHandler implements Listener {
             Pack p = PackRegister.getPack(event.getArgsString());
             if (p == null) return;
             StringBuilder sb = new StringBuilder("Black cards for: ").append(p.getPackName()).append("\n");
-            int x = 0;
+            //int x = 0;
             for (BlackCard card : p.getBlacks()) {
-                if (x++ == 0) {
-                    File file = card.drawImage();
-                    chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(file)).build());
-                }
-                sb.append(" - ").append(card.getText()).append("\n");
+                File file = card.drawImage();
+                chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(file)).build());
+                //sb.append(" - ").append(card.getText()).append("\n");
             }
-            chat.sendMessage(sb.toString());
+            //chat.sendMessage(sb.toString());
         }
     }
 }
