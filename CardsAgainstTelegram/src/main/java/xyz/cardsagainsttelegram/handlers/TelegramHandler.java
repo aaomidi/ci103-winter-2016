@@ -11,7 +11,7 @@ import xyz.cardsagainsttelegram.bean.BlackCard;
 import xyz.cardsagainsttelegram.bean.Pack;
 import xyz.cardsagainsttelegram.bean.WhiteCard;
 
-import java.io.File;
+import java.io.InputStream;
 
 public class TelegramHandler implements Listener {
     private final TelegramBot bot;
@@ -51,8 +51,8 @@ public class TelegramHandler implements Listener {
             StringBuilder sb = new StringBuilder("Black cards for: ").append(p.getPackName()).append("\n");
             //int x = 0;
             for (BlackCard card : p.getBlacks()) {
-                File is = card.drawImage();
-                chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(is)).build());
+                InputStream is = card.drawImage();
+                chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(is, "card.png")).build());
                 //sb.append(" - ").append(card.getText()).append("\n");
             }
             //chat.sendMessage(sb.toString());
