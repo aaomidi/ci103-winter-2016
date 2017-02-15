@@ -2,7 +2,6 @@ package xyz.cardsagainsttelegram.bean;
 
 import lombok.Data;
 import lombok.Getter;
-import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,17 +16,15 @@ public class BlackCard implements Card {
     private final String text;
     @Getter
     private final int empty;
-    private transient Font font = new Font("Helvetica", Font.PLAIN, 14);
+    private transient Font font = new Font("Impact", Font.PLAIN, 14);
 
     public InputStream drawImage() {
-        ClassLoader classLoader = CardsAgainstTelegram.class.getClassLoader();
 
         BufferedImage img = null;
         try {
-            String filePath = classLoader.getResource("bCard.png").getFile();
+            InputStream is = this.getClass().getResourceAsStream("bCard.png");
 
-            File blackCard = new File(filePath);
-            img = ImageIO.read(blackCard);
+            img = ImageIO.read(is);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -36,17 +33,9 @@ public class BlackCard implements Card {
 
         g.setFont(font);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        drawString(g, text, 30, 50);
 
-        //File cardOutput = new File("/home/amir/Desktop/card.png");
-        /*File cardOutput = new File("C:/Users/amir/Desktop/card.png");
-        try {
-            ImageIO.write(img, "png", cardOutput);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //return cardOutput; */
+        drawString(g, text, 30, 50);
+        g.dispose();
         return bufferedImagetoIS(img);
     }
 
