@@ -1,4 +1,4 @@
-package xyz.cardsagainsttelegram.files.deckfile;
+package xyz.cardsagainsttelegram.bean.deckfile;
 
 import lombok.Data;
 

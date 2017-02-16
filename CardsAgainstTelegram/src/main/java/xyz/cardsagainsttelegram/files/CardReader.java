@@ -2,7 +2,7 @@ package xyz.cardsagainsttelegram.files;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import xyz.cardsagainsttelegram.files.deckfile.DeckFile;
+import xyz.cardsagainsttelegram.bean.deckfile.DeckFile;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -1,7 +1,7 @@
-package xyz.cardsagainsttelegram.files.deckfile;
+package xyz.cardsagainsttelegram.bean.deckfile;
 
 import lombok.RequiredArgsConstructor;
-import xyz.cardsagainsttelegram.bean.BlackCard;
+import xyz.cardsagainsttelegram.bean.card.BlackCard;
 
 @RequiredArgsConstructor
 public class BlackDeckInfo {

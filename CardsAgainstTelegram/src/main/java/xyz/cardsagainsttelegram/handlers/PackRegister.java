@@ -1,6 +1,6 @@
 package xyz.cardsagainsttelegram.handlers;
 
-import xyz.cardsagainsttelegram.bean.Pack;
+import xyz.cardsagainsttelegram.bean.card.Pack;
 
 import java.util.Collection;
 import java.util.HashMap;
