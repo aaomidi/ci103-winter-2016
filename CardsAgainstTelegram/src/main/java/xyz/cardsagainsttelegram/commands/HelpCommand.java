@@ -1,3 +1,4 @@
+
 package xyz.cardsagainsttelegram.commands;
 
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -11,7 +12,8 @@ public class HelpCommand extends Command {
 
     @Override
     public boolean execute(CommandMessageReceivedEvent event) {
-        event.getChat().sendMessage("Hai");
-        return false;
+
+        event.getChat().sendMessage("hi");
+        return true;
     }
 }
