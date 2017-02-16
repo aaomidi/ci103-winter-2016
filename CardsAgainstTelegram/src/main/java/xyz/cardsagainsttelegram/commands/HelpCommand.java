@@ -11,6 +11,8 @@ public class HelpCommand extends Command {
 
     @Override
     public boolean execute(CommandMessageReceivedEvent event) {
-        return false;
+
+        event.getChat().sendMessage("hi");
+        return true;
     }
 }
