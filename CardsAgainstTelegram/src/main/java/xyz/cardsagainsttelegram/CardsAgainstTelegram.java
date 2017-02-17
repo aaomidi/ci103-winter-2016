@@ -1,6 +1,7 @@
 package xyz.cardsagainsttelegram;
 
 import lombok.Getter;
+import pro.zackpollard.telegrambot.api.TelegramBot;
 import xyz.cardsagainsttelegram.engine.commands.CreateLobbyCommand;
 import xyz.cardsagainsttelegram.engine.commands.HelpCommand;
 import xyz.cardsagainsttelegram.engine.commands.StartCommand;
@@ -24,7 +25,7 @@ public class CardsAgainstTelegram {
 
     private void run(String... args) {
         cardReader = new CardReader();
-        telegramHandler = new TelegramHandler(args[0]);
+        telegramHandler = new TelegramHandler(args[0], this);
 
         registerCommands();
         while (true) {
@@ -43,5 +44,9 @@ public class CardsAgainstTelegram {
         new CreateLobbyCommand(this);
         new HelpCommand(this);
         new StartCommand(this);
+    }
+
+    public TelegramBot getBot() {
+        return telegramHandler.getBot();
     }
 }

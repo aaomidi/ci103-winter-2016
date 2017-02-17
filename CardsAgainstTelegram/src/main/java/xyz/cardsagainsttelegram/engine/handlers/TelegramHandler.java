@@ -4,15 +4,18 @@ import lombok.Getter;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
+import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.command.Command;
 import xyz.cardsagainsttelegram.bean.game.Player;
 
 public class TelegramHandler implements Listener {
+    private final CardsAgainstTelegram instance;
     @Getter
     private final TelegramBot bot;
 
-    public TelegramHandler(String apiKey) {
+    public TelegramHandler(String apiKey, CardsAgainstTelegram instance) {
         bot = TelegramBot.login(apiKey);
+        this.instance = instance;
         bot.startUpdates(true);
         bot.getEventsManager().register(this);
     }
@@ -26,7 +29,7 @@ public class TelegramHandler implements Listener {
             return;
         }
 
-        Player player = PlayerRegistry.getPlayer(event.getMessage().getSender());
+        Player player = PlayerRegistry.getPlayer(instance, event.getMessage().getSender());
 
         if (command.isAdmin()) {
             if (player.isAdmin()) {

@@ -1,6 +1,8 @@
 package xyz.cardsagainsttelegram.engine.handlers;
 
 
+import pro.zackpollard.telegrambot.api.menu.InlineMenu;
+import pro.zackpollard.telegrambot.api.menu.InlineMenuBuilder;
 import xyz.cardsagainsttelegram.bean.game.Lobby;
 import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.utils.Strings;
@@ -55,5 +57,33 @@ public class LobbyRegistry {
         }
 
         return null;
+    }
+
+    public static InlineMenu lobbySubMenu(Player player, InlineMenuBuilder builder) {
+        boolean res = createLobby(player);
+
+        Lobby lobby = player.getLobby();
+
+        InlineMenu menu = builder.subMenu()
+                .newRow()
+                .inputButton(Strings.NAME + " Name: " + lobby.getName())
+                .buttonCallback(b -> "Send me a new name!")
+                .textCallback((button, value) -> {
+                    lobby.setName(value);
+                    button.setText(Strings.NAME + " Name: " + lobby.getName());
+                })
+                .buildRow()
+                .newRow()
+                .toggleButton(Strings.INVITE_OTHERS + " Invite others")
+                .toggleCallback((b, v) -> {
+                    player.send("Send your friends the following message so they can join you!");
+                    player.send("https://t.me/%s?start=%s", player.getInstance().getBot().getBotUsername().substring(1), lobby.getKey());
+                    return null;
+                })
+                .newRow()
+                .backButton(Strings.GO_BACK + " Back")
+                .buildMenu();
+
+        return menu;
     }
 }
