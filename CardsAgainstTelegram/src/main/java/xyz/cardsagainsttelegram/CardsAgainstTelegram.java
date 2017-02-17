@@ -1,15 +1,30 @@
 package xyz.cardsagainsttelegram;
 
-import xyz.cardsagainsttelegram.commands.HelpCommand;
-import xyz.cardsagainsttelegram.files.CardReader;
-import xyz.cardsagainsttelegram.handlers.TelegramHandler;
+import lombok.Getter;
+import xyz.cardsagainsttelegram.engine.commands.CreateLobbyCommand;
+import xyz.cardsagainsttelegram.engine.commands.HelpCommand;
+import xyz.cardsagainsttelegram.engine.commands.StartCommand;
+import xyz.cardsagainsttelegram.engine.files.CardReader;
+import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 
 public class CardsAgainstTelegram {
+    @Getter
     private CardReader cardReader;
+    @Getter
+    private TelegramHandler telegramHandler;
 
-    public CardsAgainstTelegram(String... args) {
+    private CardsAgainstTelegram(String... args) {
+        run(args);
+    }
+
+    public static void main(String... args) {
+        assert args.length > 0;
+        new CardsAgainstTelegram(args);
+    }
+
+    private void run(String... args) {
         cardReader = new CardReader();
-        new TelegramHandler(args[0]);
+        telegramHandler = new TelegramHandler(args[0]);
 
         registerCommands();
         while (true) {
@@ -21,15 +36,12 @@ public class CardsAgainstTelegram {
         }
     }
 
-    public static void main(String... args) {
-        assert args.length > 0;
-        new CardsAgainstTelegram(args);
-    }
-
     /**
      * Add any new commands here.
      */
-    public void registerCommands() {
+    private void registerCommands() {
+        new CreateLobbyCommand(this);
         new HelpCommand(this);
+        new StartCommand(this);
     }
 }

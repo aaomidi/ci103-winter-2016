@@ -4,10 +4,12 @@ package xyz.cardsagainsttelegram.bean.command;
 import lombok.Getter;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
-import xyz.cardsagainsttelegram.handlers.CommandRegister;
+import xyz.cardsagainsttelegram.bean.game.Player;
+import xyz.cardsagainsttelegram.engine.handlers.CommandRegistry;
 
 public abstract class Command {
-    private final CardsAgainstTelegram instance;
+
+    protected final CardsAgainstTelegram instance;
     @Getter
     private final String name;
     @Getter
@@ -21,10 +23,10 @@ public abstract class Command {
         this.description = description;
         this.admin = admin;
 
-        CommandRegister.registerCommand(this);
+        CommandRegistry.registerCommand(this);
     }
 
 
-    public abstract boolean execute(CommandMessageReceivedEvent event);
+    public abstract boolean execute(Player player, CommandMessageReceivedEvent event);
 
 }

@@ -6,7 +6,7 @@ import xyz.cardsagainsttelegram.bean.card.WhiteCard;
 import java.util.List;
 
 public class RoundStats {
-    private User winner;
+    private Player winner;
     private BlackCard blackCard;
     private List<WhiteCard> whiteCardList;
 }

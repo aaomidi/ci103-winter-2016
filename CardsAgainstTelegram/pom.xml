@@ -20,9 +20,17 @@
             <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>pro.zackpollard.telegrambot.api</groupId>
             <artifactId>jtelegram-botapi</artifactId>
+            <version>1.6.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>pro.zackpollard.telegrambot.api</groupId>
+            <artifactId>jtelegram-botapi-menus</artifactId>
             <version>1.6.0</version>
             <scope>compile</scope>
         </dependency>

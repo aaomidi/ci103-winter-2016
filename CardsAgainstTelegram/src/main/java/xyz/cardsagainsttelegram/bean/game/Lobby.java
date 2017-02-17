@@ -1,24 +1,47 @@
 package xyz.cardsagainsttelegram.bean.game;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class Lobby {
+    @Getter
     private final String key;
+    @Getter
     private final long creation;
+    @Getter
+    private final Player owner;
+
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private boolean privateGame;
-    private User owner;
+    @Getter
+    @Setter
     private long lastUse;
 
-    private List<User> players;
+    @Getter
+    @Setter
+    private List<Player> players = new ArrayList<>();
 
     // ROUND INFO
-    private User czar;
+    @Getter
+    @Setter
+    private Player czar;
 
     // History of Lobby
-    private List<RoundStats> roundstats;
+    @Getter
+    @Setter
+    private List<RoundStats> roundstats = new ArrayList<>();
 
+    public Lobby(String key, Player player) {
+        this.key = key;
+        this.creation = System.currentTimeMillis();
+        this.name = player.getName() + "'s Lobby";
+        this.owner = player;
+    }
 }
