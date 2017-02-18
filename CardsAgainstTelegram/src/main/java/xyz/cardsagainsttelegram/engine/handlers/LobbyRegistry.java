@@ -1,9 +1,11 @@
 package xyz.cardsagainsttelegram.engine.handlers;
 
 
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.menu.InlineMenuBuilder;
 import xyz.cardsagainsttelegram.bean.game.Lobby;
+import xyz.cardsagainsttelegram.bean.game.LobbyJoinResult;
 import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.utils.Strings;
 
@@ -77,7 +79,7 @@ public class LobbyRegistry {
                 .toggleButton(Strings.INVITE_OTHERS + " Invite others")
                 .toggleCallback((b, v) -> {
                     player.send("Send your friends the following message so they can join you!");
-                    player.send("https://t.me/%s?start=%s", player.getInstance().getBot().getBotUsername().substring(1), lobby.getKey());
+                    player.send(ParseMode.MARKDOWN, "Click [here](https://t.me/%s?start=%s) to join %s's Cards Against Telegram Lobby!", player.getInstance().getBot().getBotUsername().substring(1), lobby.getKey(), lobby.getOwner().getName());
                     return null;
                 })
                 .newRow()
@@ -85,5 +87,38 @@ public class LobbyRegistry {
                 .buildMenu();
 
         return menu;
+    }
+
+    /**
+     * Gets a lobby using its key.
+     *
+     * @param key Key to access lobby.
+     * @return Lobby if it found one.
+     */
+    public static Lobby getLobby(String key) {
+        return lobbyMap.get(key);
+    }
+
+    public static LobbyJoinResult joinLobby(Player player, String key) {
+        return joinLobby(player, getLobby(key));
+    }
+
+    /**
+     * Call to let a player join a lobby with others.
+     *
+     * @param player The player joining
+     * @param lobby  The lobby of the player.
+     * @return
+     */
+    public static LobbyJoinResult joinLobby(Player player, Lobby lobby) {
+        if (lobby == null) return LobbyJoinResult.LOBBY_NOT_FOUND;
+
+        if (!player.canCreateLobby()) return LobbyJoinResult.PLAYER_HAS_LOBBY;
+
+        if (!lobby.playerJoin(player)) return LobbyJoinResult.LOBBY_FULL;
+
+        player.setLobby(lobby);
+
+        return LobbyJoinResult.SUCCESS;
     }
 }

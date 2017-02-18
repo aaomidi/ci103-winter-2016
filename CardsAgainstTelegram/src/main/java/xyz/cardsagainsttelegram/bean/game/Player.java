@@ -3,10 +3,15 @@ package xyz.cardsagainsttelegram.bean.game;
 import lombok.Getter;
 import lombok.Setter;
 import pro.zackpollard.telegrambot.api.chat.Chat;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.user.User;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
+import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
+import xyz.cardsagainsttelegram.utils.Strings;
+
 
 public class Player {
     @Getter
@@ -42,22 +47,30 @@ public class Player {
     }
 
     /**
-     * Returns true if the player can create a lobby.
+     * Returns true if the player can create or join a lobby.
      *
-     * @return true if player can create a lobby.
+     * @return true if player can create or join a lobby.
      */
     public boolean canCreateLobby() {
         return lobby == null;
     }
 
     public void send(String msg, Object... args) {
+        send(ParseMode.NONE, msg, args);
+    }
+
+    public void send(ParseMode parseMode, String msg, Object... args) {
         String fm = null;
         if (args.length == 0) {
             fm = msg;
         } else {
             fm = String.format(msg, args);
         }
-        getChat().sendMessage(SendableTextMessage.markdown(fm).build());
+        getChat().sendMessage(SendableTextMessage.builder().parseMode(parseMode).message(fm).build());
+    }
+
+    public void send(SendableMessage message) {
+        getChat().sendMessage(message);
     }
 
     public Chat getChat() {
@@ -77,5 +90,19 @@ public class Player {
             inlineMenu.unregister();
         }
         this.inlineMenu = menu;
+    }
+
+    public boolean join(String lobby) {
+        send("Joining...");
+        LobbyJoinResult result = LobbyRegistry.joinLobby(this, lobby);
+        this.send(Strings.getString(result));
+        return result == LobbyJoinResult.SUCCESS;
+    }
+
+    public String getEffectiveName() {
+        if (getUsername() == null) {
+            return getName();
+        }
+        return getUsername();
     }
 }

@@ -29,7 +29,14 @@ public class StartCommand extends Command {
 
             player.sendInlineMenu(builder.buildMenu());
         } else {
-            // Do game joining logic.
+            if (player.join(event.getArgs()[0])) {
+                player.sendInlineMenu(startCreator(player).buildMenu());
+            }
+
+            String key = event.getArgs()[0];
+            if (player.join(key)) {
+                player.sendInlineMenu(startCreator(player).buildMenu());
+            }
         }
 
         return true;
@@ -56,17 +63,23 @@ public class StartCommand extends Command {
         } else {
             builder
                     .newRow()
-                    .menuButton(Strings.CREATE_LOBBY + " Create Lobby")
-                    .nextMenu(LobbyRegistry.lobbySubMenu(player, builder))
-                    .buttonCallback(b -> Strings.LOBBY_SETTINGS + " Lobby Settings")
+                    .toggleButton(Strings.CREATE_LOBBY + " Create Lobby")
+                    //.nextMenu(LobbyRegistry.lobbySubMenu(player, builder))
+                    .toggleCallback((b, v) -> {
+                        player.send("Creating your lobby!");
+                        LobbyRegistry.createLobby(player);
+                        player.sendInlineMenu(startCreator(player).buildMenu());
+                        return null;
+                    })
                     .build()
                     .newRow()
                     .inputButton(Strings.JOIN_LOBBY + " Join Lobby")
                     .buttonCallback(b -> "Send me the ID of the lobby")
-                    .textCallback((button, value) -> {
+                    .textCallback((button, key) -> {
                         // handle joining logic.
-                        player.send("Joining...");
-                        player.sendInlineMenu(startCreator(player).buildMenu());
+                        if (player.join(key)) {
+                            player.sendInlineMenu(startCreator(player).buildMenu());
+                        }
                     })
                     .build().build();
         }
