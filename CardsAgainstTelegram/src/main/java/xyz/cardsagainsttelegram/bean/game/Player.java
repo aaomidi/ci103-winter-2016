@@ -9,6 +9,7 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.user.User;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
+import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 import xyz.cardsagainsttelegram.utils.Strings;
 
@@ -93,15 +94,15 @@ public class Player {
     }
 
     public boolean leave() {
-        LobbyConnectionResult result = LobbyRegistry.leaveLobby(this, lobby);
+        LobbyResult result = LobbyRegistry.leaveLobby(this, lobby);
         this.send(Strings.getString(result));
-        return result == LobbyConnectionResult.SUCCESS;
+        return result == LobbyResult.SUCCESS;
     }
 
     public boolean join(String lobby) {
-        LobbyConnectionResult result = LobbyRegistry.joinLobby(this, lobby);
+        LobbyResult result = LobbyRegistry.joinLobby(this, lobby);
         this.send(Strings.getString(result));
-        return result == LobbyConnectionResult.SUCCESS;
+        return result == LobbyResult.SUCCESS;
     }
 
     public String getEffectiveName() {

@@ -5,8 +5,8 @@ import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.menu.InlineMenuBuilder;
 import xyz.cardsagainsttelegram.bean.game.Lobby;
-import xyz.cardsagainsttelegram.bean.game.LobbyConnectionResult;
 import xyz.cardsagainsttelegram.bean.game.Player;
+import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.utils.Strings;
 
 import java.util.*;
@@ -99,7 +99,7 @@ public class LobbyRegistry {
         return lobbyMap.get(key);
     }
 
-    public static LobbyConnectionResult joinLobby(Player player, String key) {
+    public static LobbyResult joinLobby(Player player, String key) {
         return joinLobby(player, getLobby(key));
     }
 
@@ -110,8 +110,8 @@ public class LobbyRegistry {
      * @param lobby  The lobby of the player.
      * @return
      */
-    public static LobbyConnectionResult joinLobby(Player player, Lobby lobby) {
-        if (lobby == null) return LobbyConnectionResult.LOBBY_NOT_FOUND;
+    public static LobbyResult joinLobby(Player player, Lobby lobby) {
+        if (lobby == null) return LobbyResult.LOBBY_NOT_FOUND;
 
         return lobby.playerJoin(player);
     }
@@ -123,10 +123,10 @@ public class LobbyRegistry {
      * @param lobby  The lobby of the player.
      * @return
      */
-    public static LobbyConnectionResult leaveLobby(Player player, Lobby lobby) {
-        if (lobby == null) return LobbyConnectionResult.LOBBY_NOT_FOUND;
+    public static LobbyResult leaveLobby(Player player, Lobby lobby) {
+        if (lobby == null) return LobbyResult.LOBBY_NOT_FOUND;
 
-        if (!player.hasLobby()) return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
+        if (!player.hasLobby()) return LobbyResult.PLAYER_NOT_IN_LOBBY;
 
         return lobby.playerLeave(player);
     }

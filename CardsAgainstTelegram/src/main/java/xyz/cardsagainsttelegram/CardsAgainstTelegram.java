@@ -4,6 +4,7 @@ import lombok.Getter;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import xyz.cardsagainsttelegram.engine.commands.CreateLobbyCommand;
 import xyz.cardsagainsttelegram.engine.commands.HelpCommand;
+import xyz.cardsagainsttelegram.engine.commands.ShareCommand;
 import xyz.cardsagainsttelegram.engine.commands.StartCommand;
 import xyz.cardsagainsttelegram.engine.files.CardReader;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
@@ -43,6 +44,7 @@ public class CardsAgainstTelegram {
     private void registerCommands() {
         new CreateLobbyCommand(this);
         new HelpCommand(this);
+        new ShareCommand(this);
         new StartCommand(this);
     }
 

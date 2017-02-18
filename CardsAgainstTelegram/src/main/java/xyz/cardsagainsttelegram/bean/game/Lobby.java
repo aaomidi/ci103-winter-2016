@@ -3,6 +3,8 @@ package xyz.cardsagainsttelegram.bean.game;
 import lombok.Getter;
 import lombok.Setter;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
+import xyz.cardsagainsttelegram.bean.game.enums.LobbyState;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Strings;
@@ -70,19 +72,19 @@ public class Lobby {
      * @param player
      * @return SUCCESS If lobby join was successful.
      */
-    public LobbyConnectionResult playerJoin(Player player) {
-        if (getPlayerCount() >= maxPlayers) return LobbyConnectionResult.LOBBY_FULL;
+    public LobbyResult playerJoin(Player player) {
+        if (getPlayerCount() >= maxPlayers) return LobbyResult.LOBBY_FULL;
 
         // This should really never happen.
-        if (players.contains(player)) return LobbyConnectionResult.PLAYER_IN_LOBBY;
+        if (players.contains(player)) return LobbyResult.PLAYER_IN_LOBBY;
 
-        if (player.hasLobby()) return LobbyConnectionResult.PLAYER_HAS_LOBBY;
+        if (player.hasLobby()) return LobbyResult.PLAYER_HAS_LOBBY;
 
         players.add(player);
         sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
 
         player.setLobby(this);
-        return LobbyConnectionResult.SUCCESS;
+        return LobbyResult.SUCCESS;
     }
 
     /**
@@ -91,9 +93,9 @@ public class Lobby {
      * @param player
      * @return SUCCESS If lobby leave was successful.
      */
-    public LobbyConnectionResult playerLeave(Player player) {
+    public LobbyResult playerLeave(Player player) {
         if (!players.contains(player)) {
-            return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
+            return LobbyResult.PLAYER_NOT_IN_LOBBY;
         }
 
         if (owner.equals(player)) { // Lobby has to be disbanded with all players kicked.
@@ -107,7 +109,7 @@ public class Lobby {
         }
 
         player.setLobby(null);
-        return LobbyConnectionResult.SUCCESS;
+        return LobbyResult.SUCCESS;
     }
 
     /**
