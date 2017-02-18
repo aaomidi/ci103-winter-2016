@@ -76,7 +76,7 @@ public class Lobby {
         // This should really never happen.
         if (players.contains(player)) return LobbyConnectionResult.PLAYER_IN_LOBBY;
 
-        if (!player.canCreateLobby()) return LobbyConnectionResult.PLAYER_HAS_LOBBY;
+        if (player.hasLobby()) return LobbyConnectionResult.PLAYER_HAS_LOBBY;
 
         players.add(player);
         sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));

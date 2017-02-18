@@ -47,12 +47,12 @@ public class Player {
     }
 
     /**
-     * Returns true if the player can create or join a lobby.
+     * Returns true if the player has a lobby.
      *
-     * @return true if player can create or join a lobby.
+     * @return true if player has a lobby
      */
-    public boolean canCreateLobby() {
-        return lobby == null;
+    public boolean hasLobby() {
+        return lobby != null;
     }
 
     public void send(String msg, Object... args) {

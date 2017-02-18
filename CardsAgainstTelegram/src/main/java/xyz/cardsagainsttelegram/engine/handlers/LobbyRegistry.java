@@ -17,7 +17,7 @@ public class LobbyRegistry {
     private static Set<Lobby> lobbies = new HashSet<>();
 
     public static boolean createLobby(Player player) {
-        if (!player.canCreateLobby()) {
+        if (player.hasLobby()) {
             return false;
         }
 
@@ -126,7 +126,7 @@ public class LobbyRegistry {
     public static LobbyConnectionResult leaveLobby(Player player, Lobby lobby) {
         if (lobby == null) return LobbyConnectionResult.LOBBY_NOT_FOUND;
 
-        if (player.canCreateLobby()) return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
+        if (!player.hasLobby()) return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
 
         return lobby.playerLeave(player);
     }
