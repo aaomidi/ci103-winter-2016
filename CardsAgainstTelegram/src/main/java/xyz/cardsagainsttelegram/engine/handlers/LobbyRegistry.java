@@ -5,7 +5,7 @@ import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.menu.InlineMenuBuilder;
 import xyz.cardsagainsttelegram.bean.game.Lobby;
-import xyz.cardsagainsttelegram.bean.game.LobbyJoinResult;
+import xyz.cardsagainsttelegram.bean.game.LobbyConnectionResult;
 import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.utils.Strings;
 
@@ -99,7 +99,7 @@ public class LobbyRegistry {
         return lobbyMap.get(key);
     }
 
-    public static LobbyJoinResult joinLobby(Player player, String key) {
+    public static LobbyConnectionResult joinLobby(Player player, String key) {
         return joinLobby(player, getLobby(key));
     }
 
@@ -110,15 +110,29 @@ public class LobbyRegistry {
      * @param lobby  The lobby of the player.
      * @return
      */
-    public static LobbyJoinResult joinLobby(Player player, Lobby lobby) {
-        if (lobby == null) return LobbyJoinResult.LOBBY_NOT_FOUND;
+    public static LobbyConnectionResult joinLobby(Player player, Lobby lobby) {
+        if (lobby == null) return LobbyConnectionResult.LOBBY_NOT_FOUND;
 
-        if (!player.canCreateLobby()) return LobbyJoinResult.PLAYER_HAS_LOBBY;
+        return lobby.playerJoin(player);
+    }
 
-        if (!lobby.playerJoin(player)) return LobbyJoinResult.LOBBY_FULL;
+    /**
+     * Call to let a player leave a lobby.
+     *
+     * @param player The player leaving
+     * @param lobby  The lobby of the player.
+     * @return
+     */
+    public static LobbyConnectionResult leaveLobby(Player player, Lobby lobby) {
+        if (lobby == null) return LobbyConnectionResult.LOBBY_NOT_FOUND;
 
-        player.setLobby(lobby);
+        if (player.canCreateLobby()) return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
 
-        return LobbyJoinResult.SUCCESS;
+        return lobby.playerLeave(player);
+    }
+
+    public static void unloadLobby(Lobby lobby) {
+        lobbyMap.remove(lobby.getKey());
+        lobbies.remove(lobby);
     }
 }

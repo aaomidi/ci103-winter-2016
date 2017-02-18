@@ -92,11 +92,16 @@ public class Player {
         this.inlineMenu = menu;
     }
 
-    public boolean join(String lobby) {
-        send("Joining...");
-        LobbyJoinResult result = LobbyRegistry.joinLobby(this, lobby);
+    public boolean leave() {
+        LobbyConnectionResult result = LobbyRegistry.leaveLobby(this, lobby);
         this.send(Strings.getString(result));
-        return result == LobbyJoinResult.SUCCESS;
+        return result == LobbyConnectionResult.SUCCESS;
+    }
+
+    public boolean join(String lobby) {
+        LobbyConnectionResult result = LobbyRegistry.joinLobby(this, lobby);
+        this.send(Strings.getString(result));
+        return result == LobbyConnectionResult.SUCCESS;
     }
 
     public String getEffectiveName() {

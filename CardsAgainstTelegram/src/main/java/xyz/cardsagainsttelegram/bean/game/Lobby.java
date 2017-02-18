@@ -3,6 +3,7 @@ package xyz.cardsagainsttelegram.bean.game;
 import lombok.Getter;
 import lombok.Setter;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 import xyz.cardsagainsttelegram.utils.Strings;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class Lobby {
     @Getter
     @Setter
     private long lastUse;
+    @Getter
+    @Setter
+    private LobbyState lobbyState;
 
     @Getter
     private int maxPlayers = 6;
@@ -52,6 +56,7 @@ public class Lobby {
         this.owner = player;
 
         this.players.add(owner);
+        lobbyState = LobbyState.WAIT;
     }
 
     public int getPlayerCount() {
@@ -59,15 +64,38 @@ public class Lobby {
     }
 
 
-    public boolean playerJoin(Player player) {
-        if (getPlayerCount() >= maxPlayers) return false;
+    public LobbyConnectionResult playerJoin(Player player) {
+        if (getPlayerCount() >= maxPlayers) return LobbyConnectionResult.LOBBY_FULL;
 
         // This should really never happen.
-        if (players.contains(player)) return false;
+        if (players.contains(player)) return LobbyConnectionResult.PLAYER_IN_LOBBY;
+
+        if (!player.canCreateLobby()) return LobbyConnectionResult.PLAYER_HAS_LOBBY;
 
         players.add(player);
-        sendMessageToAll("%s joined the lobby!", player.getEffectiveName());
-        return true;
+        sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
+
+        player.setLobby(this);
+        return LobbyConnectionResult.SUCCESS;
+    }
+
+    public LobbyConnectionResult playerLeave(Player player) {
+        if (!players.contains(player)) {
+            return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
+        }
+
+        if (owner.equals(player)) { // Lobby has to be disbanded with all players kicked.
+            sendMessageToAll("Lobby disbanded.");
+            unload();
+
+        } else {
+            // handle stuff.
+            players.remove(player);
+            sendMessageToAll("%s left the lobby!", Strings.escape(player.getEffectiveName(), true));
+        }
+
+        player.setLobby(null);
+        return LobbyConnectionResult.SUCCESS;
     }
 
     public void sendMessageToAll(String msg, Object... obj) {
@@ -87,5 +115,16 @@ public class Lobby {
 
             player.send(sendableTextMessage);
         }
+    }
+
+    private void unload() {
+        players.clear();
+        lobbyState = LobbyState.DISBANDED;
+        for (Player player : players) {
+            player.setLobby(null);
+        }
+        // End Game
+
+        LobbyRegistry.unloadLobby(this);
     }
 }

@@ -1,7 +1,7 @@
 package xyz.cardsagainsttelegram.utils;
 
 
-import xyz.cardsagainsttelegram.bean.game.LobbyJoinResult;
+import xyz.cardsagainsttelegram.bean.game.LobbyConnectionResult;
 
 import java.security.SecureRandom;
 
@@ -31,7 +31,7 @@ public class Strings {
         return sb.toString();
     }
 
-    public static String getString(LobbyJoinResult result) {
+    public static String getString(LobbyConnectionResult result) {
         switch (result) {
             case LOBBY_NOT_FOUND:
                 return "Lobby not found";
@@ -39,6 +39,10 @@ public class Strings {
                 return "Lobby is full";
             case PLAYER_HAS_LOBBY:
                 return "You are already in a lobby. Use /leave to leave your lobby.";
+            case PLAYER_NOT_IN_LOBBY:
+                return "You are not in the lobby.";
+            case PLAYER_IN_LOBBY:
+                return "You are already in that lobby.";
             case UNKNOWN:
                 return "An unknown error occured, please contact @aaomidi";
             case SUCCESS:
@@ -47,4 +51,8 @@ public class Strings {
         return "";
     }
 
+    public static String escape(String text, boolean brackets) {
+        String res = (text == null) ? "null" : (brackets ? text.replace("[", "\\[") : text);
+        return res.replace("*", "\\*").replace("_", "\\_").replace("`", "\\`");
+    }
 }
