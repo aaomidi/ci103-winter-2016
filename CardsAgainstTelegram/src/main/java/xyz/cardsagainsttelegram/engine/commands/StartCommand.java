@@ -2,6 +2,9 @@ package xyz.cardsagainsttelegram.engine.commands;
 
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
+import pro.zackpollard.telegrambot.api.chat.message.send.InputFile;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendablePhotoMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
@@ -21,10 +24,12 @@ public class StartCommand extends Command {
     public boolean execute(Player player, CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
         if (chat.getType() != ChatType.PRIVATE) {
-            //event.getChat().sendMessage("You need to send a private message to me.");
-            //return false;
+            event.getChat().sendMessage("You need to send a private message to me.");
+            return false;
         }
-        if (event.getArgs().length == 0) {
+
+        // This is cancer atm. Not using it.
+        /*if (event.getArgs().length == 0) {
             InlineMenuBuilder builder = startCreator(player);
 
             player.sendInlineMenu(builder.buildMenu());
@@ -37,8 +42,32 @@ public class StartCommand extends Command {
             if (player.join(key)) {
                 player.sendInlineMenu(startCreator(player).buildMenu());
             }
-        }
+        }*/
 
+        SendableMessage message = SendableTextMessage.builder().textBuilder()
+                .bold("WELCOME TO THE MONKEY HOUSE " + player.getEffectiveName()).newLine()
+                .plain("mmmmm fresh meat :)").newLine()
+                .plain("Welcome to a bot made for terrible and horrible people by terrible and horrible people.").newLine()
+                .plain("This bot is for you if you're one of the following: ").newLine()
+                .plain("\t- You're a \"nice guy\" who's angry at the world").newLine()
+                .plain("\t- You have small hands ").italics("(plz don't deport me)").newLine()
+                .plain("\t- You bully children on club penguin").newLine()
+                .plain("\t- You believe in \"alternative facts\"").newLine()
+                .plain("\t- You want to have fun with dark humor").newLine()
+                .plain("\t- You use the following face in very, very weird situations: " + "( ͡° ͜ʖ ͡°)").newLine()
+                .newLine()
+                .plain("Actually I don't care why you're here. So yeah, wanna start playing cards against telegram? I'm not here to help you.").newLine()
+                .plain("I've heard people have some luck with the guy who manages /help. I don't trust him though. kthx").newLine()
+                .plain("Here. have a picture of my cock to get yourself started")
+                .buildText().build();
+
+        player.send(message);
+
+        message = SendablePhotoMessage.builder()
+                .photo(new InputFile(this.getClass().getResourceAsStream("/cock.jpg"), "cock.jpg"))
+                .build();
+
+        player.send(message);
         return true;
     }
 

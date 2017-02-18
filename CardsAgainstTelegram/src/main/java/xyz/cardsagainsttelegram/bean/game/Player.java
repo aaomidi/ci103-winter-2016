@@ -87,7 +87,7 @@ public class Player {
 
     private void setInlineMenu(InlineMenu menu) {
         if (this.inlineMenu != null) {
-            inlineMenu.unregister();
+            //inlineMenu.unregister();
         }
         this.inlineMenu = menu;
     }
@@ -104,5 +104,18 @@ public class Player {
             return getName();
         }
         return getUsername();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Player)) {
+            return false;
+        }
+        return ((Player) o).getId().equals(this.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
     }
 }
