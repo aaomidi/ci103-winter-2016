@@ -150,7 +150,7 @@ public class Lobby {
      * @return
      */
     public String getShareLink() {
-        return String.format("https://t.me/%s/%s", TelegramHandler.getBOT_USERNAME(), getKey());
+        return String.format("https://t.me/%s?start=%s", TelegramHandler.getBOT_USERNAME().substring(1), getKey());
     }
 
     /**

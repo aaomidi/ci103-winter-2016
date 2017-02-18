@@ -43,7 +43,7 @@ public class StartCommand extends Command {
 
         player.send(message);
 
-        if (event.getArgs().length != 1) {
+        if (event.getArgs().length != 0) {
             String key = event.getArgs()[0];
             player.join(key);
             player.send("You have joined %s! Remember to say hi a**hole!", player.getLobby().getName());

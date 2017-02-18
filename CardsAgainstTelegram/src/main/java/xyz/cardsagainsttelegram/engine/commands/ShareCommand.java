@@ -27,7 +27,7 @@ public class ShareCommand extends Command {
         SendableMessage message = SendableTextMessage.builder().textBuilder()
                 .plain("Click ")
                 .link("this ", player.getLobby().getShareLink())
-                .plain("link to join ").plain(player.getLobby().getName()).plain(" .")
+                .plain("link to join ").plain(player.getLobby().getName()).plain(".")
                 .buildText().build();
 
         player.send(message);
