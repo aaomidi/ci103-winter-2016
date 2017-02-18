@@ -7,7 +7,7 @@ import xyz.cardsagainsttelegram.bean.game.Player;
 
 public class HelpCommand extends Command {
     public HelpCommand(CardsAgainstTelegram instance) {
-        super(instance, "help", "Shows a list of commands with their description", false);
+        super(instance, "help", "Shows a list of commands with their description", false, false);
     }
 
     @Override

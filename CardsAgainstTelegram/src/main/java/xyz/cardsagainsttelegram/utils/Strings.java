@@ -46,7 +46,7 @@ public class Strings {
             case UNKNOWN:
                 return "An unknown error occured, please contact @aaomidi";
             case SUCCESS:
-                return "Joined lobby! Don't forget to say hi!";
+                return "Successful!";
         }
         return "";
     }

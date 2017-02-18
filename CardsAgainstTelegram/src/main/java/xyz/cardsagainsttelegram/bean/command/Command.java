@@ -16,12 +16,15 @@ public abstract class Command {
     private final String description;
     @Getter
     private final boolean admin;
+    @Getter
+    private final boolean isPrivate; // Should this command only work in a private chat?
 
-    public Command(CardsAgainstTelegram instance, String name, String description, boolean admin) {
+    public Command(CardsAgainstTelegram instance, String name, String description, boolean admin, boolean isPrivate) {
         this.instance = instance;
         this.name = name;
         this.description = description;
         this.admin = admin;
+        this.isPrivate = isPrivate;
 
         CommandRegistry.registerCommand(this);
     }

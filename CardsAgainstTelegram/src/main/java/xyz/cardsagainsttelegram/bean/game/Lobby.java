@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
+import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Strings;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class Lobby {
     @Getter
     private int maxPlayers = 6;
     @Getter
-    private int minPlayers = 6;
+    private int minPlayers = 2;
 
     @Getter
     @Setter
@@ -63,7 +64,12 @@ public class Lobby {
         return players.size();
     }
 
-
+    /**
+     * Call to let a player join this lobby. (Call this through Player#join(String)
+     *
+     * @param player
+     * @return SUCCESS If lobby join was successful.
+     */
     public LobbyConnectionResult playerJoin(Player player) {
         if (getPlayerCount() >= maxPlayers) return LobbyConnectionResult.LOBBY_FULL;
 
@@ -79,6 +85,12 @@ public class Lobby {
         return LobbyConnectionResult.SUCCESS;
     }
 
+    /**
+     * Call to let a player leave this lobby. (Call this through Player#leave
+     *
+     * @param player
+     * @return SUCCESS If lobby leave was successful.
+     */
     public LobbyConnectionResult playerLeave(Player player) {
         if (!players.contains(player)) {
             return LobbyConnectionResult.PLAYER_NOT_IN_LOBBY;
@@ -86,7 +98,7 @@ public class Lobby {
 
         if (owner.equals(player)) { // Lobby has to be disbanded with all players kicked.
             sendMessageToAll("Lobby disbanded.");
-            unload();
+            disband();
 
         } else {
             // handle stuff.
@@ -98,26 +110,51 @@ public class Lobby {
         return LobbyConnectionResult.SUCCESS;
     }
 
+    /**
+     * Send a message to everyone in the lobby.
+     *
+     * @param msg
+     * @param obj
+     */
     public void sendMessageToAll(String msg, Object... obj) {
         for (Player player : players) {
             player.send(msg, obj);
         }
     }
 
+    /**
+     * Relay a message from one player to others.
+     *
+     * @param sender The sender of the message.
+     * @param msg    The message to be relayed.
+     */
     public void relayMessage(Player sender, String msg) {
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().textBuilder()
+                .plain(Strings.PERSON_TALKING)
+                .bold(sender.getEffectiveName())
+                .plain(": " + msg).buildText().build();
+
         for (Player player : players) {
             if (player.equals(sender)) continue;
 
-            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().textBuilder()
-                    .plain(Strings.PERSON_TALKING)
-                    .bold(sender.getEffectiveName())
-                    .plain(": " + msg).buildText().build();
 
             player.send(sendableTextMessage);
         }
     }
 
-    private void unload() {
+    /**
+     * Returns the URL you can use to share the game with others.
+     *
+     * @return
+     */
+    public String getShareLink() {
+        return String.format("https://t.me/%s/%s", TelegramHandler.getBOT_USERNAME(), getKey());
+    }
+
+    /**
+     * Call when you're disbanding this lobby.
+     */
+    private void disband() {
         players.clear();
         lobbyState = LobbyState.DISBANDED;
         for (Player player : players) {

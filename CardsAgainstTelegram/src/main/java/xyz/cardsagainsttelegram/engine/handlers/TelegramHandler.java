@@ -13,6 +13,8 @@ import xyz.cardsagainsttelegram.bean.command.Command;
 import xyz.cardsagainsttelegram.bean.game.Player;
 
 public class TelegramHandler implements Listener {
+    @Getter
+    private static String BOT_USERNAME;
     private final CardsAgainstTelegram instance;
     @Getter
     private final TelegramBot bot;
@@ -22,6 +24,8 @@ public class TelegramHandler implements Listener {
         this.instance = instance;
         bot.startUpdates(true);
         bot.getEventsManager().register(this);
+
+        BOT_USERNAME = bot.getBotUsername();
     }
 
     @Override
@@ -30,6 +34,12 @@ public class TelegramHandler implements Listener {
         Command command = CommandRegistry.getCommand(message);
         if (command == null) {
             // Ignore
+            return;
+        }
+
+        Chat chat = event.getChat();
+        if (command.isPrivate() && chat.getType() != ChatType.PRIVATE) {
+            event.getChat().sendMessage("You need to send a private message to me.");
             return;
         }
 
