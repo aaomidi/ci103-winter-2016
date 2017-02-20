@@ -45,6 +45,8 @@ public class Strings {
                 return "You are not in the lobby.";
             case PLAYER_IN_LOBBY:
                 return "You are already in that lobby.";
+            case PLAYER_NOT_OWN_LOBBY:
+                return "You do not have permissions to modify this lobby.";
             case UNKNOWN:
                 return "An unknown error occured, please contact @.";
             case SUCCESS:

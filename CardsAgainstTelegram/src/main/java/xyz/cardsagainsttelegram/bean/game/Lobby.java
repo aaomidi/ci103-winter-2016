@@ -21,7 +21,6 @@ public class Lobby {
     private final Player owner;
 
     @Getter
-    @Setter
     private String name;
     @Getter
     @Setter
@@ -165,5 +164,11 @@ public class Lobby {
         // End Game
 
         LobbyRegistry.unloadLobby(this);
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
+
+        sendMessageToAll("The name of the lobby changed to %s.", newName);
     }
 }

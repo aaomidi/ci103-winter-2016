@@ -7,6 +7,7 @@ public enum LobbyResult {
     PLAYER_NO_LOBBY,
     PLAYER_NOT_IN_LOBBY,
     PLAYER_IN_LOBBY,
+    PLAYER_NOT_OWN_LOBBY,
     UNKNOWN,
     SUCCESS
 }
