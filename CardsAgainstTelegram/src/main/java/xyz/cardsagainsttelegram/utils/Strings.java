@@ -1,6 +1,7 @@
 package xyz.cardsagainsttelegram.utils;
 
 
+import xyz.cardsagainsttelegram.bean.game.enums.GenericResult;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 
 import java.security.SecureRandom;
@@ -51,6 +52,14 @@ public class Strings {
                 return "An unknown error occured, please contact @.";
             case SUCCESS:
                 return "Successful!";
+        }
+        return "";
+    }
+
+    public static String getString(GenericResult result) {
+        switch (result) {
+            case NOT_ENOUGH_ARGS:
+                return "Not enough arguments.";
         }
         return "";
     }

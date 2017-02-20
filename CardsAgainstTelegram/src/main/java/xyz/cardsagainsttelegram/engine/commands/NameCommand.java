@@ -4,6 +4,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.command.Command;
 import xyz.cardsagainsttelegram.bean.game.Player;
+import xyz.cardsagainsttelegram.bean.game.enums.GenericResult;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.utils.Strings;
 
@@ -25,11 +26,8 @@ public class NameCommand extends Command {
             return true;
         }
 
-        // /name newName
-
         if (event.getArgs().length == 0) {
-            // not enough args;
-            //TODO reply to player with not enough args
+            player.send(Strings.getString(GenericResult.NOT_ENOUGH_ARGS));
             return true;
         }
 
