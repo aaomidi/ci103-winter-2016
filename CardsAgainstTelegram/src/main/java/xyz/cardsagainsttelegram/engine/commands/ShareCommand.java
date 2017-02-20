@@ -9,9 +9,6 @@ import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.utils.Strings;
 
-/**
- * Created by amir on 2/18/17.
- */
 public class ShareCommand extends Command {
     public ShareCommand(CardsAgainstTelegram instance) {
         super(instance, "share", "Provides a link you can use to share the lobby with others.", false, true);
@@ -28,6 +25,12 @@ public class ShareCommand extends Command {
                 .plain("Click ")
                 .link("this ", player.getLobby().getShareLink())
                 .plain("link to join ").plain(player.getLobby().getName()).plain(".")
+                .newLine()
+                .newLine()
+                .italics("If that link does not work, please message ").plain(instance.getBot().getBotUsername()).italics(" with the following message:")
+                .newLine()
+                .newLine()
+                .plain("/join ").plain(player.getLobby().getKey())
                 .buildText().build();
 
         player.send(message);
