@@ -17,4 +17,8 @@ public class CommandRegistry {
         return commands.get(cmd.toLowerCase());
     }
 
+    public static HashMap<String, Command> getCommands() {
+        return commands;
+    }
+
 }
