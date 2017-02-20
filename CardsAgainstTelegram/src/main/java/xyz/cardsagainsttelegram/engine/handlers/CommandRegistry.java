@@ -1,11 +1,13 @@
 package xyz.cardsagainsttelegram.engine.handlers;
 
 
+import lombok.Getter;
 import xyz.cardsagainsttelegram.bean.command.Command;
 
 import java.util.HashMap;
 
 public class CommandRegistry {
+    @Getter
     private static HashMap<String, Command> commands = new HashMap<>();
 
 
@@ -15,10 +17,6 @@ public class CommandRegistry {
 
     public static Command getCommand(String cmd) {
         return commands.get(cmd.toLowerCase());
-    }
-
-    public static HashMap<String, Command> getCommands() {
-        return commands;
     }
 
 }

@@ -10,15 +10,23 @@ import java.util.HashMap;
 
 public class HelpCommand extends Command {
     public HelpCommand(CardsAgainstTelegram instance) {
-        super(instance, "help", "Shows a list of commands with their description", false, false);
+        super(instance, "help", "Shows a list of commands with their description.", false, false);
     }
 
     @Override
     public boolean execute(Player player, CommandMessageReceivedEvent event) {
         HashMap<String, Command> commands = CommandRegistry.getCommands();
+        StringBuilder sb = new StringBuilder();
         for (String key : commands.keySet()) {
-            event.getChat().sendMessage("/" + commands.get(key).getName() + " - " + commands.get(key).getDescription());
+            sb
+                    //.append("/")
+                    .append(commands.get(key).getName())
+                    .append(" - ")
+                    .append(commands.get(key).getDescription())
+                    .append("\n");
         }
+
+        event.getChat().sendMessage(sb.toString().trim());
         return true;
     }
 }

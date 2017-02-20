@@ -11,7 +11,7 @@ import xyz.cardsagainsttelegram.utils.Strings;
 public class NameCommand extends Command {
 
     public NameCommand(CardsAgainstTelegram instance) {
-        super(instance, "name", "Changes the name of the lobby", false, true);
+        super(instance, "name", "Changes the name of the lobby.", false, true);
     }
 
     @Override

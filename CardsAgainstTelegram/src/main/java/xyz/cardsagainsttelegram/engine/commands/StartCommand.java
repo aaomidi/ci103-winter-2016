@@ -12,7 +12,7 @@ import xyz.cardsagainsttelegram.bean.game.Player;
 
 public class StartCommand extends Command {
     public StartCommand(CardsAgainstTelegram instance) {
-        super(instance, "start", "Starts the bot", false, true);
+        super(instance, "start", "Starts the bot.", false, true);
     }
 
     @Override

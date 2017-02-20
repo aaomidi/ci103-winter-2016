@@ -8,7 +8,7 @@ import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 
 public class CreateLobbyCommand extends Command {
     public CreateLobbyCommand(CardsAgainstTelegram instance) {
-        super(instance, "createlobby", "Creates a cards against telegram lobby", false, true);
+        super(instance, "createlobby", "Creates a cards against telegram lobby.", false, true);
     }
 
     @Override
