@@ -18,7 +18,7 @@ public class BotFatherCommand extends Command {
         SendableTextMessage.SendableTextBuilder builder = SendableTextMessage.builder().textBuilder();
         for (Command command : CommandRegistry.getCommands().values()) {
             if (command.isAdmin()) continue;
-            builder.preformatted(String.format("%s - %s\n", command.getName(), command.getDescription()));
+            builder.preformatted(String.format("%s - %s", command.getName(), command.getDescription()));
         }
 
         player.send(builder.buildText().build());

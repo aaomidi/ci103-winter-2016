@@ -19,9 +19,7 @@ public class HelpCommand extends Command {
         TreeSet<Command> commands = new TreeSet<>(CommandRegistry.getCommands().values());
         StringBuilder sb = new StringBuilder();
         for (Command command : commands) {
-            if (command.isAdmin()) {
-                continue;
-            }
+            if (command.isAdmin()) continue;
             sb.append(String.format("*%s* - %s", command.getName(), command.getDescription())).append("\n");
         }
 
