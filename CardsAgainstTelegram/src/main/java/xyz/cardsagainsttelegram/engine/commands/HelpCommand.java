@@ -1,5 +1,6 @@
 package xyz.cardsagainsttelegram.engine.commands;
 
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.command.Command;
@@ -21,15 +22,10 @@ public class HelpCommand extends Command {
             if (command.isAdmin()) {
                 continue;
             }
-            sb
-                    //.append("/")
-                    .append(command.getName())
-                    .append(" - ")
-                    .append(command.getDescription())
-                    .append("\n");
+            sb.append(String.format("*%s* - %s", command.getName(), command.getDescription())).append("\n");
         }
 
-        event.getChat().sendMessage(sb.toString().trim());
+        event.getChat().sendMessage(SendableTextMessage.markdown(sb.toString()).build());
         return true;
     }
 }

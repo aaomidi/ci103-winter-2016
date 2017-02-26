@@ -10,7 +10,7 @@ import xyz.cardsagainsttelegram.engine.handlers.CommandRegistry;
 
 public class BotFatherCommand extends Command {
     public BotFatherCommand(CardsAgainstTelegram instance) {
-        super(instance, "botfater", "Returns the list of commands to add to botfather.", true, true);
+        super(instance, "botfather", "Returns the list of commands to add to botfather.", true, true);
     }
 
     @Override
