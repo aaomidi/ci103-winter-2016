@@ -44,7 +44,7 @@ public class TelegramHandler implements Listener {
         }
 
         Player player = PlayerRegistry.getPlayer(instance, event.getMessage().getSender());
-        System.out.println(player.getEffectiveName() + event.getCommand() + " " + event.getArgsString());
+        System.out.println(player.getEffectiveName() + " " + event.getCommand() + " " + event.getArgsString());
 
         if (command.isAdmin()) {
             if (player.isAdmin()) {
