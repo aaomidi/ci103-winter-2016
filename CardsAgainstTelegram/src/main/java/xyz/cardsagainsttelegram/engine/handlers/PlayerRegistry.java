@@ -10,8 +10,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlayerRegistry {
+    private static HashSet<Long> admins;
+
     private static Set<Player> players = new HashSet<>();
     private static Map<String, Player> idPlayerMap = new HashMap<>();
+
+    static {
+        // Hardcoded admins for now
+        admins.add(55395012L);
+    }
 
     public static Player getPlayer(CardsAgainstTelegram instance, User user) {
         Player player = idPlayerMap.get(String.valueOf(user.getId()));
@@ -22,6 +29,9 @@ public class PlayerRegistry {
             players.add(player);
         }
 
+        if (admins.contains(user.getId())) {
+            player.setAdmin(true);
+        }
         return player;
     }
 }
