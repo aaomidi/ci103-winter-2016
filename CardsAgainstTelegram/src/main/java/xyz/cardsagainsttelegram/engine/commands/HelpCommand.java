@@ -6,7 +6,7 @@ import xyz.cardsagainsttelegram.bean.command.Command;
 import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.engine.handlers.CommandRegistry;
 
-import java.util.HashMap;
+import java.util.TreeSet;
 
 public class HelpCommand extends Command {
     public HelpCommand(CardsAgainstTelegram instance) {
@@ -15,14 +15,17 @@ public class HelpCommand extends Command {
 
     @Override
     public boolean execute(Player player, CommandMessageReceivedEvent event) {
-        HashMap<String, Command> commands = CommandRegistry.getCommands();
+        TreeSet<Command> commands = new TreeSet<>(CommandRegistry.getCommands().values());
         StringBuilder sb = new StringBuilder();
-        for (String key : commands.keySet()) {
+        for (Command command : commands) {
+            if (command.isPrivate()) {
+                continue;
+            }
             sb
                     //.append("/")
-                    .append(commands.get(key).getName())
+                    .append(command.getName())
                     .append(" - ")
-                    .append(commands.get(key).getDescription())
+                    .append(command.getDescription())
                     .append("\n");
         }
 

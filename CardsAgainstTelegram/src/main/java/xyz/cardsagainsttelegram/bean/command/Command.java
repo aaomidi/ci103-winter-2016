@@ -7,7 +7,7 @@ import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.engine.handlers.CommandRegistry;
 
-public abstract class Command {
+public abstract class Command implements Comparable<Command> {
 
     protected final CardsAgainstTelegram instance;
     @Getter
@@ -32,4 +32,8 @@ public abstract class Command {
 
     public abstract boolean execute(Player player, CommandMessageReceivedEvent event);
 
+    @Override
+    public int compareTo(Command command) {
+        return getName().compareTo(command.getName());
+    }
 }
