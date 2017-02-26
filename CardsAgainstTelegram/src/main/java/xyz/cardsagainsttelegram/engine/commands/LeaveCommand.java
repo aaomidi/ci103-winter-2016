@@ -18,4 +18,5 @@ public class LeaveCommand extends Command {
             event.getChat().sendMessage("You are not in a lobby.");
         return true;
     }
+
 }
