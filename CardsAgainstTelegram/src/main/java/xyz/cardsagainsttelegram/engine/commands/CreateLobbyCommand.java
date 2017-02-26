@@ -15,7 +15,7 @@ public class CreateLobbyCommand extends Command {
     public boolean execute(Player player, CommandMessageReceivedEvent event) {
         boolean res = LobbyRegistry.createLobby(player);
         if (!res) {
-            event.getChat().sendMessage("You can not create a lobby. You already are part of a lobby.\nYou can use /leavelobby to leave your lobby.");
+            event.getChat().sendMessage("You can not create a lobby. You already are part of a lobby.\nYou can use /leave to leave your lobby.");
             return true;
         }
         event.getChat().sendMessage("Lobby creation successful!");
