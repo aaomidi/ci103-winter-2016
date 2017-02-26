@@ -4,7 +4,9 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.command.Command;
 import xyz.cardsagainsttelegram.bean.game.Player;
+import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
+import xyz.cardsagainsttelegram.utils.Strings;
 
 public class JoinCommand extends Command {
     public JoinCommand(CardsAgainstTelegram instance) {
@@ -17,14 +19,16 @@ public class JoinCommand extends Command {
             event.getChat().sendMessage("You can not create a lobby. You already are part of a lobby.\nYou can use /leave to leave your lobby.");
             return true;
         }
-        if (event.getArgs().length > 1) {
-            event.getChat().sendMessage("Incorrect format. \nPlease try \"join KEY\"");
+        // Why care if its a longer arg? Let's just attempt to join them.
+        if (event.getArgs().length == 0) {
+            event.getChat().sendMessage("You need to enter the ID for the lobby you want to join!");
             return true;
         }
 
         String key = event.getArgsString();
-        LobbyRegistry.joinLobby(player, key);
+        LobbyResult result = LobbyRegistry.joinLobby(player, key);
 
+        player.send(Strings.getString(result));
         return true;
     }
 }
