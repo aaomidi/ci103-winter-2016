@@ -37,17 +37,16 @@ public class CardsAgainstTelegram {
 
     /**
      * Add any new commands here.
-     * Follow alphabetical order.
      */
     private void registerCommands() {
-        new BotFatherCommand(this);
         new CreateLobbyCommand(this);
         new HelpCommand(this);
-        new InfoCommand(this);
-        new LeaveCommand(this);
         new NameCommand(this);
         new ShareCommand(this);
         new StartCommand(this);
+        new LeaveCommand(this);
+        new InfoCommand(this);
+        new JoinCommand(this);
     }
 
     public TelegramBot getBot() {
