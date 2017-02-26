@@ -44,6 +44,7 @@ public class CardsAgainstTelegram {
         new NameCommand(this);
         new ShareCommand(this);
         new StartCommand(this);
+        new LeaveCommand(this);
     }
 
     public TelegramBot getBot() {
