@@ -36,6 +36,7 @@ public class InfoCommand extends Command {
                     .append("Number of Players: ").append(playerCount).append("\n")
                     .append("Shareable Link: ").append(shareLink).append("\n\n");
 
+            /* This would get too spammy. We can add different commands for this
             for (Player currentPlayer : players) {
                 int wins = currentPlayer.getWins();
                 String playerName = currentPlayer.getName();
@@ -45,11 +46,11 @@ public class InfoCommand extends Command {
                         .append("=== Players Information ===").append("\n")
                         .append(playerName).append("'s Username: ").append(username).append("\n")
                         .append(playerName).append("'s Wins: ").append(wins).append("\n");
-            }
+            } */
             event.getChat().sendMessage(sb.toString().trim());
-        } else
+        } else {
             event.getChat().sendMessage("You must be in a lobby to use this command.");
-
+        }
         return true;
     }
 }
