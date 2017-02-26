@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlayerRegistry {
-    private static HashSet<Long> admins;
+    private static HashSet<Long> admins = new HashSet<>();
 
     private static Set<Player> players = new HashSet<>();
     private static Map<String, Player> idPlayerMap = new HashMap<>();
