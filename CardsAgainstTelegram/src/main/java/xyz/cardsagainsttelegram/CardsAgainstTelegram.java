@@ -2,8 +2,10 @@ package xyz.cardsagainsttelegram;
 
 import lombok.Getter;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.engine.commands.*;
 import xyz.cardsagainsttelegram.engine.files.CardReader;
+import xyz.cardsagainsttelegram.engine.handlers.PlayerRegistry;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Updater;
 
@@ -23,10 +25,11 @@ public class CardsAgainstTelegram {
     }
 
     private void run(String... args) {
-        new Thread(new Updater()).start();
+        new Thread(new Updater(this)).start();
+
+        telegramHandler = new TelegramHandler(args[0], this);
 
         cardReader = new CardReader();
-        telegramHandler = new TelegramHandler(args[0], this);
 
         registerCommands();
         while (true) {
@@ -56,5 +59,12 @@ public class CardsAgainstTelegram {
 
     public TelegramBot getBot() {
         return telegramHandler.getBot();
+    }
+
+    public void tellAdmins(String msg) {
+        for (Player player : PlayerRegistry.getPlayers()) {
+            if (!player.isAdmin()) continue;
+            player.send(msg);
+        }
     }
 }
