@@ -17,4 +17,4 @@ pipelines:
           script:
             - mkdir -p ~/.ssh
             - echo -e "Host $DEPLOY_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-            - ssh $DEPLOY_HOST -q "~/updater.sh" 2> /dev/null
+            - ssh $DEPLOY_HOST -q "~/updater.sh"
