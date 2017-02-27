@@ -10,12 +10,11 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd CardsAgainstTelegram
-          - mvn clean install
+          - mvn clean package
   branches:
     master:
       - step:
           script:
             - mkdir -p ~/.ssh
-            - touch ~/.ssh/config
             - echo -e "Host penguin.aaomidi.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
             - ssh penguin.aaomidi.com -q "~/updater.sh"
