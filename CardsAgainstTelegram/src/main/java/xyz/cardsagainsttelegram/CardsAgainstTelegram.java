@@ -23,9 +23,9 @@ public class CardsAgainstTelegram {
     }
 
     private void run(String... args) {
-        new Thread(new Updater(this)).start();
-
         telegramHandler = new TelegramHandler(args[0], this);
+
+        new Thread(new Updater(this)).start();
 
         cardReader = new CardReader();
 
