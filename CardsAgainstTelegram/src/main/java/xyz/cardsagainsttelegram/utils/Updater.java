@@ -16,6 +16,12 @@ public class Updater implements Runnable {
     @Override
     public void run() {
         while (true) {
+            try {
+                Thread.sleep(1000 * 5); // Check every 5 seconds
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             File file = new File("update_available");
             if (file.exists()) {
                 System.out.println("File existed. Attempting to restart!");
@@ -25,11 +31,7 @@ public class Updater implements Runnable {
                     System.exit(0);
                 }
             }
-            try {
-                Thread.sleep(1000 * 5); // Check every 5 seconds
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
         }
 
     }
