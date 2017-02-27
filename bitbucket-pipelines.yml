@@ -16,5 +16,6 @@ pipelines:
       - step:
           script:
             - mkdir -p ~/.ssh
-            - echo -e "Host $DEPLOY_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+            - touch ~/.ssh/config
+            - echo -e "Host penguin.aaomidi.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
             - ssh penguin.aaomidi.com -q "~/updater.sh"
