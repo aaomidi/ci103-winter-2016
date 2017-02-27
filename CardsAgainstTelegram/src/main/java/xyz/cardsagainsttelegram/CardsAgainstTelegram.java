@@ -2,10 +2,8 @@ package xyz.cardsagainsttelegram;
 
 import lombok.Getter;
 import pro.zackpollard.telegrambot.api.TelegramBot;
-import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.engine.commands.*;
 import xyz.cardsagainsttelegram.engine.files.CardReader;
-import xyz.cardsagainsttelegram.engine.handlers.PlayerRegistry;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Updater;
 
@@ -62,9 +60,11 @@ public class CardsAgainstTelegram {
     }
 
     public void tellAdmins(String msg) {
-        for (Player player : PlayerRegistry.getPlayers()) {
+        /*for (Player player : PlayerRegistry.getPlayers()) {
             if (!player.isAdmin()) continue;
             player.send(msg);
-        }
+        }*/
+
+        getBot().getChat("-1001081498579").sendMessage("Bot update found. Restarting...");
     }
 }
