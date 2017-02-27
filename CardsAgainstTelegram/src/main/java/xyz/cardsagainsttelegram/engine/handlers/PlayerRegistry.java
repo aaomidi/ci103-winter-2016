@@ -35,4 +35,9 @@ public class PlayerRegistry {
         }
         return player;
     }
+
+    public static Set<Player> getPlayers() {
+        return players;
+    }
+
 }

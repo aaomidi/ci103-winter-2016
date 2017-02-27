@@ -1,11 +1,18 @@
 package xyz.cardsagainsttelegram.utils;
 
+import lombok.RequiredArgsConstructor;
+import xyz.cardsagainsttelegram.CardsAgainstTelegram;
+
 import java.io.File;
 
 /**
  * Created by amir on 2/26/17.
  */
+@RequiredArgsConstructor
 public class Updater implements Runnable {
+    private final CardsAgainstTelegram instance;
+
+
     @Override
     public void run() {
         while (true) {
@@ -13,11 +20,13 @@ public class Updater implements Runnable {
             if (file.exists()) {
                 System.out.println("File existed. Attempting to restart!");
                 boolean res = file.delete();
-                if (res)
+                if (res) {
+                    instance.tellAdmins("Update was found! Restarting.");
                     System.exit(0);
+                }
             }
             try {
-                Thread.sleep(1000 * 5);
+                Thread.sleep(1000 * 5); // Check every 5 seconds
             } catch (Exception e) {
                 e.printStackTrace();
             }

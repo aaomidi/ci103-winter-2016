@@ -23,10 +23,11 @@ public class CardsAgainstTelegram {
     }
 
     private void run(String... args) {
-        new Thread(new Updater()).start();
+        new Thread(new Updater(this)).start();
+
+        telegramHandler = new TelegramHandler(args[0], this);
 
         cardReader = new CardReader();
-        telegramHandler = new TelegramHandler(args[0], this);
 
         registerCommands();
         while (true) {
@@ -56,5 +57,14 @@ public class CardsAgainstTelegram {
 
     public TelegramBot getBot() {
         return telegramHandler.getBot();
+    }
+
+    public void tellAdmins(String msg) {
+        /*for (Player player : PlayerRegistry.getPlayers()) {
+            if (!player.isAdmin()) continue;
+            player.send(msg);
+        }*/
+
+        getBot().getChat("-1001081498579").sendMessage("Bot update found. Restarting...");
     }
 }
