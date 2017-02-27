@@ -5,6 +5,7 @@ import pro.zackpollard.telegrambot.api.TelegramBot;
 import xyz.cardsagainsttelegram.engine.commands.*;
 import xyz.cardsagainsttelegram.engine.files.CardReader;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
+import xyz.cardsagainsttelegram.utils.Updater;
 
 public class CardsAgainstTelegram {
     @Getter
@@ -22,6 +23,8 @@ public class CardsAgainstTelegram {
     }
 
     private void run(String... args) {
+        new Thread(new Updater()).start();
+
         cardReader = new CardReader();
         telegramHandler = new TelegramHandler(args[0], this);
 
