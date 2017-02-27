@@ -15,5 +15,7 @@ pipelines:
     master:
       - step:
           script:
+            - cd CardsAgainstTelegram
+            - mvn clean package
             - echo -e "Host penguin.aaomidi.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
             - ssh penguin.aaomidi.com -q "~/updater.sh"
