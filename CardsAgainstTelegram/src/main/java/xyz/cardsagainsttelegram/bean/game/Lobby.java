@@ -11,8 +11,9 @@ import xyz.cardsagainsttelegram.utils.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
-public class Lobby {
+public class Lobby extends TimerTask {
     @Getter
     private final String key;
     @Getter
@@ -36,6 +37,8 @@ public class Lobby {
     private int maxPlayers = 6;
     @Getter
     private int minPlayers = 2;
+    @Getter
+    private int startingPlayers = 3;
 
     @Getter
     @Setter
@@ -170,5 +173,16 @@ public class Lobby {
         this.name = newName;
 
         sendMessageToAll("The name of the lobby changed to %s.", newName);
+    }
+
+    // This method is called every 1 second(s).
+    @Override
+    public void run() {
+    }
+
+    private void checkPlayers() {
+        if (players.size() >= startingPlayers) {
+
+        }
     }
 }

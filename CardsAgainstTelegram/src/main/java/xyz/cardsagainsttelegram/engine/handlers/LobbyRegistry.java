@@ -15,6 +15,7 @@ public class LobbyRegistry {
     // Key -> Lobby
     private static Map<String, Lobby> lobbyMap = new HashMap<>();
     private static Set<Lobby> lobbies = new HashSet<>();
+    private static Timer timer = new Timer();
 
     public static boolean createLobby(Player player) {
         if (player.hasLobby()) {
@@ -33,6 +34,8 @@ public class LobbyRegistry {
         lobbyMap.put(key, lobby);
 
         player.setLobby(lobby);
+
+        timer.schedule(lobby, 0L, 1000L);
         return true;
     }
 
