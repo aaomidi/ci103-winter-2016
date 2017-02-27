@@ -15,5 +15,5 @@ pipelines:
     master:
       - step:
           script:
-            - echo -e "Host penguin.aaomidi.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-            - ssh cah@penguin.aaomidi.com -q "~/updater.sh"
+            - echo -e "Host $DEPLOY_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+            - ssh cah@$DEPLOY_HOST -q "~/updater.sh" 2> /dev/null
