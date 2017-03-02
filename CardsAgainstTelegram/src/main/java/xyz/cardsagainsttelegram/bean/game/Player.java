@@ -10,6 +10,7 @@ import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.user.User;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
+import xyz.cardsagainsttelegram.bean.game.enums.PlayerState;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 import xyz.cardsagainsttelegram.utils.Strings;
 
@@ -38,6 +39,9 @@ public class Player {
     private transient Chat chat;
     @Getter
     private transient InlineMenu inlineMenu;
+    @Getter
+    @Setter
+    private PlayerState playerState = PlayerState.NONE;
 
     public Player(CardsAgainstTelegram instance, User user) {
         this.instance = instance;
@@ -96,12 +100,18 @@ public class Player {
     public boolean leave() {
         LobbyResult result = LobbyRegistry.leaveLobby(this, lobby);
         this.send(Strings.getString(result));
+        if (result == LobbyResult.SUCCESS) {
+            playerState = PlayerState.NONE;
+        }
         return result == LobbyResult.SUCCESS;
     }
 
     public boolean join(String lobby) {
         LobbyResult result = LobbyRegistry.joinLobby(this, lobby);
         this.send(Strings.getString(result));
+        if (result == LobbyResult.SUCCESS) {
+            playerState = PlayerState.WAITING;
+        }
         return result == LobbyResult.SUCCESS;
     }
 
