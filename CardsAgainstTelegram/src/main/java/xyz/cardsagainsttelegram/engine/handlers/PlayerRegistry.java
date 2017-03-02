@@ -19,6 +19,7 @@ public class PlayerRegistry {
         // Hardcoded admins for now
         admins.add(55395012L); //Amir
         admins.add(295752642L); //Sagar
+        admins.add(272350063L); //Jess
     }
 
     public static Player getPlayer(CardsAgainstTelegram instance, User user) {
