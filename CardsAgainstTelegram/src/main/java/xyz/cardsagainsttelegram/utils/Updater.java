@@ -5,9 +5,7 @@ import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 
 import java.io.File;
 
-/**
- * Created by amir on 2/26/17.
- */
+
 @RequiredArgsConstructor
 public class Updater implements Runnable {
     private final CardsAgainstTelegram instance;
@@ -27,7 +25,11 @@ public class Updater implements Runnable {
                 System.out.println("File existed. Attempting to restart!");
                 boolean res = file.delete();
                 if (res) {
-                    instance.tellAdmins("Update was found! Restarting.");
+                    try {
+                        instance.tellAdmins("Update was found! Restarting.");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     System.exit(0);
                 }
             }
