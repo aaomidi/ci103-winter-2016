@@ -325,7 +325,7 @@ public class Lobby extends TimerTask {
         Collections.shuffle(players);
 
         setPlayersState(PlayerState.PICKING);
-        ignoreTimer = -1; // Wait two seconds before starting the game.
+        ignoreTimer = -1; // Start round instantly
         startRound();
     }
 
