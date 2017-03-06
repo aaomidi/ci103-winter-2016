@@ -68,6 +68,6 @@ public class CardsAgainstTelegram {
             player.send(msg);
         }
 
-        getBot().getChat("-1001081498579").sendMessage("Bot update found. Restarting...");
+        // getBot().getChat("-1001081498579").sendMessage("Bot update found. Restarting...");
     }
 }

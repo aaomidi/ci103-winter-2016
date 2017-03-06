@@ -15,6 +15,7 @@ public class Strings {
     public static final String JOIN_LOBBY = "\uD83D\uDD11️"; // 🔑
     public static final String LEAVE_LOBBY = "\uD83D\uDEAA"; // 🚪
     public static final String PERSON_TALKING = "\uD83D\uDDE3️"; // 🗣️
+    public static final String CZAR = "\uD83D\uDC51";// 👑
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final SecureRandom rnd = new SecureRandom();
 
@@ -38,6 +39,8 @@ public class Strings {
                 return "Lobby not found.";
             case LOBBY_FULL:
                 return "Lobby is full.";
+            case LOBBY_STARTED:
+                return "You can not join an active game.";
             case PLAYER_HAS_LOBBY:
                 return "You are already in a lobby. Use /leave to leave your lobby.";
             case PLAYER_NO_LOBBY:

@@ -9,9 +9,7 @@ import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Strings;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 
 public class Lobby extends TimerTask {
     @Getter
@@ -38,11 +36,14 @@ public class Lobby extends TimerTask {
     @Getter
     private int minPlayers = 2;
     @Getter
-    private int startingPlayers = 3;
+    private int startingPlayers = 2;
+    @Getter
+    @Setter
+    private int pointsToEnd = 5;
 
     @Getter
     @Setter
-    private List<Player> players = new ArrayList<>();
+    private LinkedList<Player> players = new LinkedList<>();
 
     // ROUND INFO
     @Getter
@@ -54,6 +55,9 @@ public class Lobby extends TimerTask {
     @Setter
     private List<RoundStats> roundstats = new ArrayList<>();
 
+    private int lobbyCountdown;
+    private long lastTick;
+
     public Lobby(String key, Player player) {
         this.key = key;
         this.creation = System.currentTimeMillis();
@@ -61,7 +65,7 @@ public class Lobby extends TimerTask {
         this.owner = player;
 
         this.players.add(owner);
-        lobbyState = LobbyState.WAIT;
+        setLobbyState(LobbyState.WAIT);
     }
 
     public int getPlayerCount() {
@@ -81,6 +85,10 @@ public class Lobby extends TimerTask {
         if (players.contains(player)) return LobbyResult.PLAYER_IN_LOBBY;
 
         if (player.hasLobby()) return LobbyResult.PLAYER_HAS_LOBBY;
+
+        if (getLobbyState() == LobbyState.DISBANDED) return LobbyResult.LOBBY_NOT_FOUND;
+
+        if (getLobbyState() != LobbyState.WAIT) return LobbyResult.LOBBY_STARTED;
 
         players.add(player);
         sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
@@ -160,7 +168,7 @@ public class Lobby extends TimerTask {
      */
     private void disband() {
         players.clear();
-        lobbyState = LobbyState.DISBANDED;
+        setLobbyState(LobbyState.DISBANDED);
         for (Player player : players) {
             player.setLobby(null);
         }
@@ -178,12 +186,54 @@ public class Lobby extends TimerTask {
     // This method is called every 1 second(s).
     @Override
     public void run() {
+        lastTick = System.currentTimeMillis();
+        checkPlayers();
+        handleCountdown();
     }
 
     private void checkPlayers() {
-        if (players.size() >= startingPlayers) {
+        if ((lastTick / 1000) % 5 != 0) return; // Check every 5 seconds.
 
+        if (getLobbyState() != LobbyState.WAIT) return;
+        if (players.size() >= startingPlayers) {
+            setLobbyState(LobbyState.GAME_STARTING);
+            lobbyCountdown = 10;
         }
     }
 
+    private void handleCountdown() {
+        switch (getLobbyState()) {
+            case WAIT:
+                return;
+            case GAME_STARTING: {
+                if (lobbyCountdown == 0) {
+                    startGame();
+                    return;
+                }
+                if (lobbyCountdown <= 5 || lobbyCountdown % 5 == 0) {
+                    sendMessageToAll("Game starting in %d seconds.", lobbyCountdown);
+                }
+                lobbyCountdown--;
+                return;
+            }
+            case IN_GAME:
+                break;
+            case DISBANDED:
+                break;
+        }
+    }
+
+    private void startGame() {
+        setLobbyState(LobbyState.IN_GAME);
+        czar = pickCzar();
+        sendMessageToAll("%s Game has started! %s is the Czar for this round.", Strings.CZAR, czar.getEffectiveName());
+        Collections.shuffle(players);
+
+    }
+
+    private Player pickCzar() {
+        Player player = players.pop();
+        players.addLast(player);
+        return player;
+    }
 }
