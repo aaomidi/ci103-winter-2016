@@ -4,9 +4,6 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.command.Command;
 import xyz.cardsagainsttelegram.bean.game.Player;
-import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
-import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
-import xyz.cardsagainsttelegram.utils.Strings;
 
 public class JoinCommand extends Command {
     public JoinCommand(CardsAgainstTelegram instance) {
@@ -26,9 +23,7 @@ public class JoinCommand extends Command {
         }
 
         String key = event.getArgsString();
-        LobbyResult result = LobbyRegistry.joinLobby(player, key);
-
-        player.send(Strings.getString(result));
+        player.join(key);
         return true;
     }
 }
