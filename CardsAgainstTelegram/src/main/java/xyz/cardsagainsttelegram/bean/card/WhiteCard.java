@@ -9,4 +9,9 @@ public class WhiteCard implements Card {
     private final CardType type = CardType.WHITE;
     @Getter
     private final String text;
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return new WhiteCard(text);
+    }
 }

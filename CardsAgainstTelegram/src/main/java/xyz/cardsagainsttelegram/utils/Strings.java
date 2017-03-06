@@ -11,11 +11,13 @@ public class Strings {
     public static final String GO_BACK = "\uD83D\uDD19"; // 🔙
     public static final String CREATE_LOBBY = "\uD83D\uDD28"; // 🔨
     public static final String NAME = "\uD83D\uDCDB"; // 📛
-    public static final String LOBBY_SETTINGS = "⚙️"; // ⚙️
+    public static final String LOBBY_SETTINGS = "⚙"; // ⚙
     public static final String JOIN_LOBBY = "\uD83D\uDD11️"; // 🔑
     public static final String LEAVE_LOBBY = "\uD83D\uDEAA"; // 🚪
     public static final String PERSON_TALKING = "\uD83D\uDDE3️"; // 🗣️
     public static final String CZAR = "\uD83D\uDC51";// 👑
+    public static final String ALERT = "⚠";//⚠
+
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final SecureRandom rnd = new SecureRandom();
 

@@ -2,14 +2,19 @@ package xyz.cardsagainsttelegram.bean.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.*;
+import xyz.cardsagainsttelegram.bean.card.BlackCard;
+import xyz.cardsagainsttelegram.bean.card.Pack;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyState;
+import xyz.cardsagainsttelegram.bean.game.enums.PlayerState;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
+import xyz.cardsagainsttelegram.engine.handlers.PackRegistery;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Strings;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Lobby extends TimerTask {
     @Getter
@@ -18,7 +23,7 @@ public class Lobby extends TimerTask {
     private final long creation;
     @Getter
     private final Player owner;
-
+    private transient ReentrantLock lock = new ReentrantLock();
     @Getter
     private String name;
     @Getter
@@ -40,6 +45,9 @@ public class Lobby extends TimerTask {
     @Getter
     @Setter
     private int pointsToEnd = 5;
+    @Getter
+    @Setter
+    private int cardPickTime = 20;
 
     @Getter
     @Setter
@@ -53,10 +61,16 @@ public class Lobby extends TimerTask {
     // History of Lobby
     @Getter
     @Setter
-    private List<RoundStats> roundstats = new ArrayList<>();
+    private List<RoundStats> roundStats = new ArrayList<>();
 
-    private int lobbyCountdown;
+    private int countdown;
+    private int ignoreTimer;
+    private int joinTimer;
     private long lastTick;
+
+    private List<String> packs;
+    private LinkedList<BlackCard> blackCards = new LinkedList<>();
+    private BlackCard blackCard = null;
 
     public Lobby(String key, Player player) {
         this.key = key;
@@ -66,6 +80,12 @@ public class Lobby extends TimerTask {
 
         this.players.add(owner);
         setLobbyState(LobbyState.WAIT);
+        packs = PackRegistery.getPacksString();
+        for (String packName : packs) {
+            Pack pack = PackRegistery.getPack(packName);
+            blackCards.addAll(pack.getBlacks());
+        }
+        Collections.shuffle(blackCards);
     }
 
     public int getPlayerCount() {
@@ -79,22 +99,30 @@ public class Lobby extends TimerTask {
      * @return SUCCESS If lobby join was successful.
      */
     public LobbyResult playerJoin(Player player) {
-        if (getPlayerCount() >= maxPlayers) return LobbyResult.LOBBY_FULL;
+        try {
+            lock.lock();
+            if (getPlayerCount() >= maxPlayers) return LobbyResult.LOBBY_FULL;
 
-        // This should really never happen.
-        if (players.contains(player)) return LobbyResult.PLAYER_IN_LOBBY;
+            // This should really never happen.
+            if (players.contains(player)) return LobbyResult.PLAYER_IN_LOBBY;
 
-        if (player.hasLobby()) return LobbyResult.PLAYER_HAS_LOBBY;
+            if (player.hasLobby()) return LobbyResult.PLAYER_HAS_LOBBY;
 
-        if (getLobbyState() == LobbyState.DISBANDED) return LobbyResult.LOBBY_NOT_FOUND;
+            if (getLobbyState() == LobbyState.DISBANDED) return LobbyResult.LOBBY_NOT_FOUND;
 
-        if (getLobbyState() != LobbyState.WAIT) return LobbyResult.LOBBY_STARTED;
+            if (getLobbyState() != LobbyState.WAIT) return LobbyResult.LOBBY_STARTED;
 
-        players.add(player);
-        sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
+            players.add(player);
+            sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
 
-        player.setLobby(this);
-        return LobbyResult.SUCCESS;
+            player.setLobby(this);
+            joinTimer = 10;
+            return LobbyResult.SUCCESS;
+        } catch (Exception ex) {
+            return LobbyResult.UNKNOWN;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -104,22 +132,29 @@ public class Lobby extends TimerTask {
      * @return SUCCESS If lobby leave was successful.
      */
     public LobbyResult playerLeave(Player player) {
-        if (!players.contains(player)) {
-            return LobbyResult.PLAYER_NOT_IN_LOBBY;
+        try {
+            if (!players.contains(player)) {
+                return LobbyResult.PLAYER_NOT_IN_LOBBY;
+            }
+
+            if (owner.equals(player)) { // Lobby has to be disbanded with all players kicked.
+                sendMessageToAll("Lobby disbanded.");
+                disband();
+
+            } else {
+                // handle stuff.
+                players.remove(player);
+                sendMessageToAll("%s left the lobby!", Strings.escape(player.getEffectiveName(), true));
+            }
+
+            player.setLobby(null);
+            return LobbyResult.SUCCESS;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return LobbyResult.UNKNOWN;
+        } finally {
+            lock.unlock();
         }
-
-        if (owner.equals(player)) { // Lobby has to be disbanded with all players kicked.
-            sendMessageToAll("Lobby disbanded.");
-            disband();
-
-        } else {
-            // handle stuff.
-            players.remove(player);
-            sendMessageToAll("%s left the lobby!", Strings.escape(player.getEffectiveName(), true));
-        }
-
-        player.setLobby(null);
-        return LobbyResult.SUCCESS;
     }
 
     /**
@@ -131,6 +166,12 @@ public class Lobby extends TimerTask {
     public void sendMessageToAll(String msg, Object... obj) {
         for (Player player : players) {
             player.send(msg, obj);
+        }
+    }
+
+    public void sendMessageToAll(SendableMessage message) {
+        for (Player player : players) {
+            player.send(message);
         }
     }
 
@@ -148,7 +189,6 @@ public class Lobby extends TimerTask {
 
         for (Player player : players) {
             if (player.equals(sender)) continue;
-
 
             player.send(sendableTextMessage);
         }
@@ -186,54 +226,147 @@ public class Lobby extends TimerTask {
     // This method is called every 1 second(s).
     @Override
     public void run() {
-        lastTick = System.currentTimeMillis();
-        checkPlayers();
-        handleCountdown();
+
+        try {
+            lock.lock();
+            lastTick = System.currentTimeMillis();
+            checkPlayers();
+            handleGameStarting();
+            handlePreRound();
+            handleCardPicking();
+        } catch (Exception ex) {
+
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void handleCardPicking() {
+        if (getLobbyState() == LobbyState.PLAYERS_PICKING) {
+            boolean allPicked = true;
+            for (Player player : getPlayers()) {
+                assert player.getPlayerState() == PlayerState.PICKING || player.getPlayerState() == PlayerState.PICKED || player.getPlayerState() == PlayerState.CZAR; // Sanity Check
+
+                if (player.getPlayerState() == PlayerState.CZAR) continue;
+                if (player.getPlayerState() != PlayerState.PICKING) continue;
+
+                if ((countdown <= 15 && countdown % 5 == 0) || countdown <= 3) {
+                    String alert = "";
+                    if (countdown <= 3) {
+                        alert = Strings.ALERT;
+                    }
+                    player.send(ParseMode.MARKDOWN, "%sYou have **%d** seconds left to pick...", alert, countdown);
+
+                    if (countdown == 1) {
+                        player.send("Dude wtf, play the game you fuck.");
+                    }
+                }
+
+                allPicked = false;
+            }
+            countdown--;
+            if (allPicked) {
+                // TODO Everyone has picked, stop the countdown and change game state.
+            } else {
+                if (countdown == 0) {
+                    // handle stuff.
+                }
+            }
+        }
+    }
+
+    private void handlePreRound() {
+        if (getLobbyState() != LobbyState.PRE_ROUND) return; // Handle only game situations.
+
+        assert ignoreTimer >= -1; // Sanity check
+
+        if (ignoreTimer > 0) { // Count down until 0.
+            --ignoreTimer;
+            return;
+        }
+
+        if (ignoreTimer == 0) {
+            startRound();
+            ignoreTimer = -1; // At -1 the variable is ignored.
+            return;
+        }
     }
 
     private void checkPlayers() {
-        if ((lastTick / 1000) % 5 != 0) return; // Check every 5 seconds.
-
         if (getLobbyState() != LobbyState.WAIT) return;
+
+        if (joinTimer > 0) {
+            joinTimer--;
+            return;
+        }
+
         if (players.size() >= startingPlayers) {
             setLobbyState(LobbyState.GAME_STARTING);
-            lobbyCountdown = 10;
+            countdown = 10;
         }
     }
 
-    private void handleCountdown() {
-        switch (getLobbyState()) {
-            case WAIT:
-                return;
-            case GAME_STARTING: {
-                if (lobbyCountdown == 0) {
-                    startGame();
-                    return;
-                }
-                if (lobbyCountdown <= 5 || lobbyCountdown % 5 == 0) {
-                    sendMessageToAll("Game starting in %d seconds.", lobbyCountdown);
-                }
-                lobbyCountdown--;
-                return;
-            }
-            case IN_GAME:
-                break;
-            case DISBANDED:
-                break;
+    private void handleGameStarting() {
+        if (getLobbyState() != LobbyState.GAME_STARTING) return;
+        if (countdown == 0) {
+            startGame();
+            return;
         }
+        if (countdown <= 5 || countdown % 5 == 0) {
+            sendMessageToAll("Game starting in %d seconds.", countdown);
+        }
+        countdown--;
+        return;
+
     }
 
     private void startGame() {
-        setLobbyState(LobbyState.IN_GAME);
-        czar = pickCzar();
-        sendMessageToAll("%s Game has started! %s is the Czar for this round.", Strings.CZAR, czar.getEffectiveName());
         Collections.shuffle(players);
 
+        setPlayersState(PlayerState.PICKING);
+        ignoreTimer = -1; // Wait two seconds before starting the game.
+        startRound();
+    }
+
+    private void endGame() {
+
+    }
+
+    private void startRound() {
+        setLobbyState(LobbyState.PLAYERS_PICKING);
+
+        czar = pickCzar();
+        sendMessageToAll("Round %d started.\n%s: %s is the Czar for this round.", roundStats.size() + 1, Strings.CZAR, czar.getEffectiveName());
+
+        // have a 30 second counter.
+        countdown = cardPickTime;
+
+        pickBlackCard();
+        sendBlackCardToPlayers(blackCard);
+
+        //TODO Give cards to players.
+    }
+
+    private void sendBlackCardToPlayers(BlackCard blackCard) {
+        for (Player player : getPlayers()) {
+            player.send(SendablePhotoMessage.builder().photo(new InputFile(blackCard.drawImage(), "bcard.png")).caption(blackCard.getTextAlternative()).build());
+        }
+
+    }
+
+    private void setPlayersState(PlayerState state) {
+        players.forEach(p -> p.setPlayerState(state));
+    }
+
+    private void pickBlackCard() {
+        blackCard = blackCards.poll();
     }
 
     private Player pickCzar() {
         Player player = players.pop();
         players.addLast(player);
+
+        player.setPlayerState(PlayerState.CZAR);
         return player;
     }
 }

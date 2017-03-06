@@ -1,28 +1,44 @@
 package xyz.cardsagainsttelegram.bean.card;
 
-import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import xyz.cardsagainsttelegram.bean.CAHInputStream;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-@Data
+@RequiredArgsConstructor
 public class BlackCard implements Card {
+    private static transient Font font = new Font("Comic Sans MS", Font.BOLD, 14);
     @Getter
     private final CardType type = CardType.BLACK;
     @Getter
     private final String text;
     @Getter
     private final int empty;
-    private transient Font font = new Font("Impact", Font.PLAIN, 14);
+    private transient CAHInputStream buffer;
 
-    public InputStream drawImage() {
+    public String getTextAlternative() {
+        return text;
+    }
+
+    public CAHInputStream drawImage() {
+        if (buffer != null) {
+            try {
+                buffer.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return buffer;
+        }
+
+        System.out.println(font.getFontName());
 
         BufferedImage img = null;
         try {
-            InputStream is = this.getClass().getResourceAsStream("bCard.png");
+            InputStream is = this.getClass().getResourceAsStream("/bCard.png");
 
             img = ImageIO.read(is);
         } catch (Exception ex) {
@@ -36,18 +52,25 @@ public class BlackCard implements Card {
 
         drawString(g, text, 30, 50);
         g.dispose();
-        return bufferedImagetoIS(img);
+
+        bufferedImagetoIS(img);
+        return buffer;
     }
 
-    public InputStream bufferedImagetoIS(BufferedImage image) {
+    private void bufferedImagetoIS(BufferedImage image) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
-            return new ByteArrayInputStream(baos.toByteArray());
+            InputStream i = new ByteArrayInputStream(baos.toByteArray());
+            BufferedInputStream buffered = new BufferedInputStream(i);
+            buffer = new CAHInputStream(buffered, baos.size() + 2);
+            buffer.mark(baos.size() + 1);
+
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
     }
+
     private void drawString(Graphics g, String text, int x, int y) {
         int maxX = 215;
 
@@ -65,5 +88,10 @@ public class BlackCard implements Card {
             printingX += len;
             printingX += m.charWidth(' ');
         }
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return new BlackCard(text, empty);
     }
 }

@@ -2,6 +2,7 @@ package xyz.cardsagainsttelegram;
 
 import lombok.Getter;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.Chat;
 import xyz.cardsagainsttelegram.bean.game.Player;
 import xyz.cardsagainsttelegram.engine.commands.*;
 import xyz.cardsagainsttelegram.engine.files.CardReader;
@@ -68,6 +69,9 @@ public class CardsAgainstTelegram {
             player.send(msg);
         }
 
-        // getBot().getChat("-1001081498579").sendMessage("Bot update found. Restarting...");
+        Chat chat = getBot().getChat("-1001081498579");
+        if (chat != null) {
+            chat.sendMessage("Bot update found. Restarting...");
+        }
     }
 }

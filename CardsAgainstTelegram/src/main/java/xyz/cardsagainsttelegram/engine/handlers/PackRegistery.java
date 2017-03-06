@@ -2,6 +2,7 @@ package xyz.cardsagainsttelegram.engine.handlers;
 
 import xyz.cardsagainsttelegram.bean.card.Pack;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,16 @@ public class PackRegistery {
         return packs.values();
     }
 
+    public static List<String> getPacksString() {
+        List<String> list = new ArrayList<>();
+        for (Pack pack : getPacks()) {
+            list.add(pack.getPackName());
+        }
+        return list;
+    }
+
     public static Pack getPack(String s) {
         return packs.get(s.toLowerCase());
     }
+
 }

@@ -9,10 +9,14 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
 import pro.zackpollard.telegrambot.api.user.User;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
+import xyz.cardsagainsttelegram.bean.card.WhiteCard;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.bean.game.enums.PlayerState;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
 import xyz.cardsagainsttelegram.utils.Strings;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Player {
@@ -42,6 +46,10 @@ public class Player {
     @Getter
     @Setter
     private PlayerState playerState = PlayerState.NONE;
+
+    @Getter
+    @Setter
+    private List<WhiteCard> deck = new LinkedList<>(); // The player's deck of cards
 
     public Player(CardsAgainstTelegram instance, User user) {
         this.instance = instance;
