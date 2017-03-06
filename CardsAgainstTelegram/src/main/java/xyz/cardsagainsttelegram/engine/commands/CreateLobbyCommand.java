@@ -18,7 +18,7 @@ public class CreateLobbyCommand extends Command {
             player.send("You can not create a lobby. You already are part of a lobby.\nYou can use /leave to leave your lobby.");
             return true;
         }
-        event.getChat().sendMessage("Lobby creation successful!");
+        event.getChat().sendMessage("Lobby creation successful! Do /share to share a link to your lobby with others.");
         return false;
     }
 }

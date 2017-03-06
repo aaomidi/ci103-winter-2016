@@ -133,6 +133,7 @@ public class Lobby extends TimerTask {
      */
     public LobbyResult playerLeave(Player player) {
         try {
+            lock.lock();
             if (!players.contains(player)) {
                 return LobbyResult.PLAYER_NOT_IN_LOBBY;
             }
