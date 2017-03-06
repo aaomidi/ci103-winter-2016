@@ -8,9 +8,14 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.HashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class BlackCard implements Card {
+    // Used as a global cache
+    private static transient HashMap<BlackCard, CAHInputStream> cachedInputStream = new HashMap<>();
+
     private static transient Font font = new Font("Comic Sans MS", Font.BOLD, 14);
     @Getter
     private final CardType type = CardType.BLACK;
@@ -18,14 +23,25 @@ public class BlackCard implements Card {
     private final String text;
     @Getter
     private final int empty;
-    private transient CAHInputStream buffer;
+
+    // This is used when we're constructing the completed black card.
+    private transient boolean hasChanged;
+    @Getter
+    private transient List<String> choices;
+
+    public void setChoices(List<String> choices) {
+        hasChanged = true;
+        this.choices = choices;
+    }
 
     public String getTextAlternative() {
         return text;
     }
 
     public CAHInputStream drawImage() {
-        if (buffer != null) {
+        CAHInputStream buffer = cachedInputStream.get(this);
+
+        if (buffer != null && !hasChanged) {
             try {
                 buffer.reset();
             } catch (IOException e) {
@@ -53,11 +69,14 @@ public class BlackCard implements Card {
         drawString(g, text, 30, 50);
         g.dispose();
 
-        bufferedImagetoIS(img);
+        buffer = bufferedImageToIS(img);
+
+        cachedInputStream.put(this, buffer);
         return buffer;
     }
 
-    private void bufferedImagetoIS(BufferedImage image) {
+    private CAHInputStream bufferedImageToIS(BufferedImage image) {
+        CAHInputStream buffer;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
@@ -65,7 +84,7 @@ public class BlackCard implements Card {
             BufferedInputStream buffered = new BufferedInputStream(i);
             buffer = new CAHInputStream(buffered, baos.size() + 2);
             buffer.mark(baos.size() + 1);
-
+            return buffer;
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
@@ -93,5 +112,25 @@ public class BlackCard implements Card {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return new BlackCard(text, empty);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BlackCard blackCard = (BlackCard) o;
+
+        if (empty != blackCard.empty) return false;
+        if (hasChanged != blackCard.hasChanged) return false;
+        return text.equals(blackCard.text);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = text.hashCode();
+        result = 31 * result + empty;
+        result = 31 * result + (hasChanged ? 1 : 0);
+        return result;
     }
 }
