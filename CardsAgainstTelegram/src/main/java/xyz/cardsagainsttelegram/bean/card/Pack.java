@@ -22,7 +22,7 @@ public class Pack implements Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         List<BlackCard> bs = new LinkedList<>();
         List<WhiteCard> ws = new LinkedList<>();
         for (BlackCard b : blacks) {

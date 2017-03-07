@@ -102,6 +102,13 @@ public class LobbyRegistry {
         return lobbyMap.get(key);
     }
 
+    /**
+     * This method must be called through the player.
+     *
+     * @param player
+     * @param key
+     * @return
+     */
     public static LobbyResult joinLobby(Player player, String key) {
         return joinLobby(player, getLobby(key));
     }

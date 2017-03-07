@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class PackRegistery {
+public class PackRegistry {
     private static final HashMap<String, Pack> packs = new HashMap<>();
 
     public static void registerPacks(List<Pack> pl) {
@@ -29,7 +29,11 @@ public class PackRegistery {
     }
 
     public static Pack getPack(String s) {
-        return packs.get(s.toLowerCase());
+        try {
+            return (Pack) packs.get(s.toLowerCase()).clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
