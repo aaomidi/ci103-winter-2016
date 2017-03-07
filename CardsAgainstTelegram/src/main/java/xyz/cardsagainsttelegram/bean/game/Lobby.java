@@ -87,8 +87,8 @@ public class Lobby extends TimerTask {
         for (String packName : packs) {
             Pack pack = PackRegistry.getPack(packName);
             blackCards.addAll(pack.getBlacks());
+            whiteCards.addAll(pack.getWhites());
         }
-
 
         Collections.shuffle(blackCards);
     }

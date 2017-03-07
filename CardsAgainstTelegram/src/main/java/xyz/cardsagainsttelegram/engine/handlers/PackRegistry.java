@@ -29,7 +29,11 @@ public class PackRegistry {
     }
 
     public static Pack getPack(String s) {
-        return packs.get(s.toLowerCase());
+        try {
+            return (Pack) packs.get(s.toLowerCase()).clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
