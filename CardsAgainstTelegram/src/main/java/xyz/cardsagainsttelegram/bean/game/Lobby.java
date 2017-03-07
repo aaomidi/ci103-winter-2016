@@ -5,11 +5,12 @@ import lombok.Setter;
 import pro.zackpollard.telegrambot.api.chat.message.send.*;
 import xyz.cardsagainsttelegram.bean.card.BlackCard;
 import xyz.cardsagainsttelegram.bean.card.Pack;
+import xyz.cardsagainsttelegram.bean.card.WhiteCard;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyResult;
 import xyz.cardsagainsttelegram.bean.game.enums.LobbyState;
 import xyz.cardsagainsttelegram.bean.game.enums.PlayerState;
 import xyz.cardsagainsttelegram.engine.handlers.LobbyRegistry;
-import xyz.cardsagainsttelegram.engine.handlers.PackRegistery;
+import xyz.cardsagainsttelegram.engine.handlers.PackRegistry;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Strings;
 
@@ -70,6 +71,7 @@ public class Lobby extends TimerTask {
 
     private List<String> packs;
     private LinkedList<BlackCard> blackCards = new LinkedList<>();
+    private LinkedList<WhiteCard> whiteCards = new LinkedList<>();
     private BlackCard blackCard = null;
 
     public Lobby(String key, Player player) {
@@ -80,11 +82,14 @@ public class Lobby extends TimerTask {
 
         this.players.add(owner);
         setLobbyState(LobbyState.WAIT);
-        packs = PackRegistery.getPacksString();
+        packs = PackRegistry.getPacksString();
+
         for (String packName : packs) {
-            Pack pack = PackRegistery.getPack(packName);
+            Pack pack = PackRegistry.getPack(packName);
             blackCards.addAll(pack.getBlacks());
         }
+
+
         Collections.shuffle(blackCards);
     }
 

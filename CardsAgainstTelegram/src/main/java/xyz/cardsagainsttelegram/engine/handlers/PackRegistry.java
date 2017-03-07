@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class PackRegistery {
+public class PackRegistry {
     private static final HashMap<String, Pack> packs = new HashMap<>();
 
     public static void registerPacks(List<Pack> pl) {

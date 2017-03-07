@@ -3,7 +3,7 @@ package xyz.cardsagainsttelegram.bean.deckfile;
 import lombok.Data;
 import xyz.cardsagainsttelegram.bean.card.Pack;
 import xyz.cardsagainsttelegram.bean.card.WhiteCard;
-import xyz.cardsagainsttelegram.engine.handlers.PackRegistery;
+import xyz.cardsagainsttelegram.engine.handlers.PackRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class DeckFile {
             list.add(pack);
         }
 
-        PackRegistery.registerPacks(list);
+        PackRegistry.registerPacks(list);
     }
 
     /**
