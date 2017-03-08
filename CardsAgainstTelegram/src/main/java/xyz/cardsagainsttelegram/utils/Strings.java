@@ -21,6 +21,7 @@ public class Strings {
     public static final String[] NUMBERS = new String[11];
     public static final String BLUE_CIRCLE = "\uD83D\uDD35"; // 🔵
     public static final String RED_CIRCLE = "\uD83D\uDD34"; // 🔴
+    public static final String SUBMIT_BUTTON = "\uD83D\uDD2E"; // 🔮
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final SecureRandom rnd = new SecureRandom();
 

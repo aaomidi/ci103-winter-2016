@@ -55,6 +55,10 @@ public class Player {
     @Setter
     private List<WhiteCard> deck = new LinkedList<>(); // The player's deck of cards
 
+    @Getter
+    @Setter
+    private LinkedList<WhiteCard> selectedCards = new LinkedList<>();
+
     public Player(CardsAgainstTelegram instance, User user) {
         this.instance = instance;
         this.id = String.valueOf(user.getId());
@@ -151,7 +155,9 @@ public class Player {
         SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder();
         SendableTextMessage.SendableTextBuilder textBuilder = messageBuilder.textBuilder();
 
-        textBuilder.plain("Pick your cards");
+        int requiredCards = getLobby().getBlackCard().getEmpty();
+        textBuilder.plain(String.format("Select %d card%s:", requiredCards, requiredCards == 1 ? "" : "s"));
+
         textBuilder.newLine();
         int i = 1;
         for (WhiteCard card : deck) {
@@ -178,15 +184,32 @@ public class Player {
             i++;
         }
 
+        rowBuilder = rowBuilder.build().newRow();
+        rowBuilder.dummyButton(String.format("%s Submit %s", Strings.SUBMIT_BUTTON, Strings.SUBMIT_BUTTON)).callback(this::submit).build();
+
         rowBuilder.build().buildMenu().start();
 
     }
 
     private void selectedCard(DummyButton dummyButton, CallbackQuery query, WhiteCard card, int i) {
+        if (playerState != PlayerState.PICKING) {
+            send("You have finalized your picks. Wait for the Czar to pick the winner.");
+            return;
+        }
         if (dummyButton.getText().contains(Strings.BLUE_CIRCLE)) {
             dummyButton.setText(Strings.NUMBERS[i]);
+            selectedCards.remove(card);
         } else {
+            int requiredCards = getLobby().getBlackCard().getEmpty();
+            if (selectedCards.size() >= requiredCards) {
+                send("You have already picked %d card%s. Use the submit button to finalize your picks.", requiredCards, requiredCards == 1 ? "" : "s");
+            }
             dummyButton.setText(String.format("%s %s", Strings.BLUE_CIRCLE, Strings.NUMBERS[i]));
+            selectedCards.add(card);
         }
+    }
+
+    private void submit(DummyButton dummyButton, CallbackQuery query) {
+        setPlayerState(PlayerState.PICKED);
     }
 }

@@ -72,6 +72,7 @@ public class Lobby extends TimerTask {
     private List<String> packs;
     private LinkedList<BlackCard> blackCards = new LinkedList<>();
     private LinkedList<WhiteCard> whiteCards = new LinkedList<>();
+    @Getter
     private BlackCard blackCard = null;
 
     public Lobby(String key, Player player) {
