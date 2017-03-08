@@ -71,7 +71,7 @@ public class CardsAgainstTelegram {
 
         Chat chat = getBot().getChat("-1001081498579");
         if (chat != null) {
-            chat.sendMessage("Bot update found. Restarting...");
+            chat.sendMessage(msg);
         }
     }
 }
