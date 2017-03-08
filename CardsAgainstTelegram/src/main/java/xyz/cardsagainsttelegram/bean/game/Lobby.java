@@ -121,7 +121,7 @@ public class Lobby extends TimerTask {
             sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
 
             player.setLobby(this);
-            joinTimer = 10;
+            joinTimer = 1;
             return LobbyResult.SUCCESS;
         } catch (Exception ex) {
             return LobbyResult.UNKNOWN;
@@ -342,7 +342,6 @@ public class Lobby extends TimerTask {
         setLobbyState(LobbyState.PLAYERS_PICKING);
 
         czar = pickCzar();
-        sendMessageToAll("Round %d started.\n%s: %s is the Czar for this round.", roundStats.size() + 1, Strings.CZAR, czar.getEffectiveName());
 
         // have a 30 second counter.
         countdown = cardPickTime;
@@ -351,6 +350,23 @@ public class Lobby extends TimerTask {
         sendBlackCardToPlayers(blackCard);
 
         //TODO Give cards to players.
+
+        for (Player player : players) {
+            player.send("Round %d started.\n%s: %s is the Czar for this round.", roundStats.size() + 1, Strings.CZAR, czar.getEffectiveName());
+
+            if (player.getPlayerState() != PlayerState.PICKING) continue;
+
+            int deckSize = player.getDeck().size();
+            int cardsRequired = 10 - deckSize; // number of cards per players.
+            assert cardsRequired > 0; // Sanity check
+
+            while (cardsRequired != 0) {
+                player.getDeck().add(whiteCards.poll());
+                cardsRequired--;
+            }
+
+            player.showCards();
+        }
     }
 
     private void sendBlackCardToPlayers(BlackCard blackCard) {

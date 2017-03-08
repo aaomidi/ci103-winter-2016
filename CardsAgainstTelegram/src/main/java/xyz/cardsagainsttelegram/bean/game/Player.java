@@ -2,11 +2,15 @@ package xyz.cardsagainsttelegram.bean.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import pro.zackpollard.telegrambot.api.chat.CallbackQuery;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.menu.InlineMenu;
+import pro.zackpollard.telegrambot.api.menu.InlineMenuBuilder;
+import pro.zackpollard.telegrambot.api.menu.InlineMenuRowBuilder;
+import pro.zackpollard.telegrambot.api.menu.button.impl.DummyButton;
 import pro.zackpollard.telegrambot.api.user.User;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.card.WhiteCard;
@@ -141,5 +145,48 @@ public class Player {
     @Override
     public int hashCode() {
         return getId().hashCode();
+    }
+
+    public void showCards() {
+        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder();
+        SendableTextMessage.SendableTextBuilder textBuilder = messageBuilder.textBuilder();
+
+        textBuilder.plain("Pick your cards");
+        textBuilder.newLine();
+        int i = 1;
+        for (WhiteCard card : deck) {
+            textBuilder.bold(String.valueOf(i)).plain(". ").plain(card.getText());
+            textBuilder.newLine();
+            i++;
+        }
+
+
+        InlineMenuBuilder builder = InlineMenu.builder(instance.getBot()).forWhom(getChat()).message(textBuilder.buildText());
+
+        builder.userFilter(user -> String.valueOf(user.getId()).equals(getId()));
+
+        InlineMenuRowBuilder<InlineMenuBuilder> rowBuilder = builder.newRow();
+        i = 1;
+        for (WhiteCard card : deck) {
+            assert i < 11; // Sanity check
+            if (i == 6) {
+                rowBuilder = rowBuilder.build().newRow();
+            }
+
+            int finalI = i;
+            rowBuilder.dummyButton(Strings.NUMBERS[i]).callback((dummyButton, callbackQuery) -> selectedCard(dummyButton, callbackQuery, card, finalI)).build();
+            i++;
+        }
+
+        rowBuilder.build().buildMenu().start();
+
+    }
+
+    private void selectedCard(DummyButton dummyButton, CallbackQuery query, WhiteCard card, int i) {
+        if (dummyButton.getText().contains(Strings.BLUE_CIRCLE)) {
+            dummyButton.setText(Strings.NUMBERS[i]);
+        } else {
+            dummyButton.setText(String.format("%s %s", Strings.BLUE_CIRCLE, Strings.NUMBERS[i]));
+        }
     }
 }
