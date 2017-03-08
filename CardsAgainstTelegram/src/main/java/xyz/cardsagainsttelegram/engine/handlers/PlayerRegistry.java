@@ -17,9 +17,10 @@ public class PlayerRegistry {
 
     static {
         // Hardcoded admins for now
-        admins.add(55395012L); //Amir
-        admins.add(295752642L); //Sagar
-        admins.add(272350063L); //Jess
+        // My ID is literally an order of magnitude shorter than you guys... Jesus christ I've been using this app for a while.
+        admins.add(55395012L);  // Amir
+        admins.add(295752642L); // Sagar
+        admins.add(272350063L); // Jess
     }
 
     public static Player getPlayer(CardsAgainstTelegram instance, User user) {
