@@ -18,8 +18,26 @@ public class Strings {
     public static final String CZAR = "\uD83D\uDC51"; // 👑
     public static final String ALERT = "⚠"; // ⚠
 
+    public static final String[] NUMBERS = new String[11];
+    public static final String BLUE_CIRCLE = "\uD83D\uDD35"; // 🔵
+    public static final String RED_CIRCLE = "\uD83D\uDD34"; // 🔴
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final SecureRandom rnd = new SecureRandom();
+
+    //
+    static {
+        NUMBERS[0] = "\u0030\u20E3";
+        NUMBERS[1] = "\u0031\u20E3";
+        NUMBERS[2] = "\u0032\u20E3";
+        NUMBERS[3] = "\u0033\u20E3";
+        NUMBERS[4] = "\u0034\u20E3";
+        NUMBERS[5] = "\u0035\u20E3";
+        NUMBERS[6] = "\u0036\u20E3";
+        NUMBERS[7] = "\u0037\u20E3";
+        NUMBERS[8] = "\u0038\u20E3";
+        NUMBERS[9] = "\u0039\u20E3";
+        NUMBERS[10] = "\uD83D\uDD1F";
+    }
 
     /**
      * Generates a random string.
