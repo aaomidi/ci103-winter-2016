@@ -21,6 +21,7 @@ public class PlayerRegistry {
         admins.add(55395012L);  // Amir
         admins.add(295752642L); // Sagar
         admins.add(272350063L); // Jess
+        admins.add(75963388L); // Tanfe
     }
 
     public static Player getPlayer(CardsAgainstTelegram instance, User user) {
