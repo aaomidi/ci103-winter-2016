@@ -102,8 +102,8 @@ public class Lobby extends TimerTask {
         Collections.shuffle(blackCards, RANDOM);
         Collections.shuffle(whiteCards, RANDOM);
 
-        pickBlackCard();
-        sendBlackCardToPlayers(blackCard, false, null);
+        //pickBlackCard();
+        //sendBlackCardToPlayers(blackCard, false, null);
     }
 
     public int getPlayerCount() {
