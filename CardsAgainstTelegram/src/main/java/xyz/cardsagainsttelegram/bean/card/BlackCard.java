@@ -9,17 +9,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 
 @RequiredArgsConstructor
 public class BlackCard implements Card {
     // Used as a global cache
     private static transient HashMap<BlackCard, CAHInputStream> cachedInputStream = new HashMap<>();
 
-    private static transient Font font = new Font("Comic Sans MS", Font.BOLD, 14);
+    private static transient Font font = new Font("Comic Sans MS", Font.BOLD, 24);
     @Getter
     private final CardType type = CardType.BLACK;
-    @Getter
     private final String text;
     @Getter
     private final int empty;
@@ -27,15 +26,15 @@ public class BlackCard implements Card {
     // This is used when we're constructing the completed black card.
     private transient boolean hasChanged;
     @Getter
-    private transient List<String> choices;
+    private transient LinkedList<WhiteCard> choices;
 
-    public void setChoices(List<String> choices) {
+    public void setChoices(LinkedList<WhiteCard> choices) {
         hasChanged = true;
         this.choices = choices;
     }
 
     public String getTextAlternative() {
-        return text;
+        return getText();
     }
 
     public CAHInputStream drawImage() {
@@ -66,7 +65,7 @@ public class BlackCard implements Card {
         g.setFont(font);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        drawString(g, text, 30, 50);
+        drawString(g, getText(), 40, 50);
         g.dispose();
 
         buffer = bufferedImageToIS(img);
@@ -91,7 +90,7 @@ public class BlackCard implements Card {
     }
 
     private void drawString(Graphics g, String text, int x, int y) {
-        int maxX = 215;
+        int maxX = 350;
 
         int printingX = x;
         int printingY = y;
@@ -132,5 +131,16 @@ public class BlackCard implements Card {
         result = 31 * result + empty;
         result = 31 * result + (hasChanged ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String getText() {
+        String newText = text;
+        if (choices != null) {
+            for (WhiteCard whiteCard : choices) {
+                newText = newText.replaceFirst("_", whiteCard.getText());
+            }
+        }
+        return newText;
     }
 }

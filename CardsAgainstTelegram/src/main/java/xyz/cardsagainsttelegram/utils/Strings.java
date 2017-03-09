@@ -22,6 +22,8 @@ public class Strings {
     public static final String BLUE_CIRCLE = "\uD83D\uDD35"; // 🔵
     public static final String RED_CIRCLE = "\uD83D\uDD34"; // 🔴
     public static final String SUBMIT_BUTTON = "\uD83D\uDD2E"; // 🔮
+    public static final String RIGHT_ARROW = "➡"; // ➡
+
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final SecureRandom rnd = new SecureRandom();
 
@@ -91,5 +93,19 @@ public class Strings {
     public static String escape(String text, boolean brackets) {
         String res = (text == null) ? "null" : (brackets ? text.replace("[", "\\[") : text);
         return res.replace("*", "\\*").replace("_", "\\_").replace("`", "\\`");
+    }
+
+    public static String getNumber(int number) {
+        if (number <= 10) {
+            return NUMBERS[number];
+        }
+        StringBuilder sb = new StringBuilder();
+        while (number > 0) {
+            int i = number % 10;
+            sb.insert(0, NUMBERS[i]);
+            number /= 10;
+
+        }
+        return sb.toString();
     }
 }

@@ -29,7 +29,7 @@ public class LobbyRegistry {
             return false;
         }
 
-        Lobby lobby = new Lobby(key, player);
+        Lobby lobby = new Lobby(player.getInstance(), key, player);
         lobbies.add(lobby);
         lobbyMap.put(key, lobby);
 

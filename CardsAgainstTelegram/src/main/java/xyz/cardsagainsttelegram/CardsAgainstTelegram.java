@@ -34,6 +34,7 @@ public class CardsAgainstTelegram {
         cardReader = new CardReader();
 
         registerCommands();
+
         while (true) {
             try {
                 Thread.sleep(100);

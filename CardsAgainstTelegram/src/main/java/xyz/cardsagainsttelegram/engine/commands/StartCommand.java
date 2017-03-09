@@ -17,7 +17,9 @@ public class StartCommand extends Command {
 
     @Override
     public boolean execute(Player player, CommandMessageReceivedEvent event) {
+
         Chat chat = event.getChat();
+
         if (event.getArgs().length == 0) {
             SendableMessage message = SendableTextMessage.builder().textBuilder()
                     .bold("WELCOME TO THE MONKEY HOUSE " + player.getEffectiveName()).newLine()

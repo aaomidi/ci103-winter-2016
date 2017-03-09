@@ -38,14 +38,14 @@ public class InfoCommand extends Command {
 
             /* This would get too spammy. We can add different commands for this
             for (Player currentPlayer : players) {
-                int wins = currentPlayer.getWins();
+                int globalWins = currentPlayer.getGlobalWins();
                 String playerName = currentPlayer.getName();
                 String username = currentPlayer.getUsername();
 
                 sb
                         .append("=== Players Information ===").append("\n")
                         .append(playerName).append("'s Username: ").append(username).append("\n")
-                        .append(playerName).append("'s Wins: ").append(wins).append("\n");
+                        .append(playerName).append("'s Wins: ").append(globalWins).append("\n");
             } */
             event.getChat().sendMessage(sb.toString().trim());
         } else {

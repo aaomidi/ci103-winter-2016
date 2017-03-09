@@ -3,6 +3,10 @@ package xyz.cardsagainsttelegram.bean.game;
 import lombok.Getter;
 import lombok.Setter;
 import pro.zackpollard.telegrambot.api.chat.message.send.*;
+import pro.zackpollard.telegrambot.api.menu.InlineMenu;
+import pro.zackpollard.telegrambot.api.menu.InlineMenuBuilder;
+import pro.zackpollard.telegrambot.api.menu.InlineMenuRowBuilder;
+import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.card.BlackCard;
 import xyz.cardsagainsttelegram.bean.card.Pack;
 import xyz.cardsagainsttelegram.bean.card.WhiteCard;
@@ -14,10 +18,13 @@ import xyz.cardsagainsttelegram.engine.handlers.PackRegistry;
 import xyz.cardsagainsttelegram.engine.handlers.TelegramHandler;
 import xyz.cardsagainsttelegram.utils.Strings;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Lobby extends TimerTask {
+    public static SecureRandom RANDOM = new SecureRandom();
+    private final CardsAgainstTelegram instance;
     @Getter
     private final String key;
     @Getter
@@ -48,7 +55,7 @@ public class Lobby extends TimerTask {
     private int pointsToEnd = 5;
     @Getter
     @Setter
-    private int cardPickTime = 20;
+    private int cardPickTime = 40;
 
     @Getter
     @Setter
@@ -75,7 +82,8 @@ public class Lobby extends TimerTask {
     @Getter
     private BlackCard blackCard = null;
 
-    public Lobby(String key, Player player) {
+    public Lobby(CardsAgainstTelegram instance, String key, Player player) {
+        this.instance = instance;
         this.key = key;
         this.creation = System.currentTimeMillis();
         this.name = player.getName() + "'s Lobby";
@@ -91,7 +99,11 @@ public class Lobby extends TimerTask {
             whiteCards.addAll(pack.getWhites());
         }
 
-        Collections.shuffle(blackCards);
+        Collections.shuffle(blackCards, RANDOM);
+        Collections.shuffle(whiteCards, RANDOM);
+
+        pickBlackCard();
+        sendBlackCardToPlayers(blackCard, false, null);
     }
 
     public int getPlayerCount() {
@@ -122,7 +134,8 @@ public class Lobby extends TimerTask {
             sendMessageToAll("%s joined the lobby!", Strings.escape(player.getEffectiveName(), true));
 
             player.setLobby(this);
-            joinTimer = 1;
+            player.setPlayerState(PlayerState.WAITING);
+            joinTimer = 10;
             return LobbyResult.SUCCESS;
         } catch (Exception ex) {
             return LobbyResult.UNKNOWN;
@@ -189,15 +202,22 @@ public class Lobby extends TimerTask {
      * @param msg    The message to be relayed.
      */
     public void relayMessage(Player sender, String msg) {
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().textBuilder()
-                .plain(Strings.PERSON_TALKING)
-                .bold(sender.getEffectiveName())
-                .plain(": " + msg).buildText().build();
+        try {
+            lock.lock();
+            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().textBuilder()
+                    .plain(Strings.PERSON_TALKING)
+                    .bold(sender.getEffectiveName())
+                    .plain(": " + msg).buildText().build();
 
-        for (Player player : players) {
-            if (player.equals(sender)) continue;
+            for (Player player : players) {
+                if (player.equals(sender)) continue;
 
-            player.send(sendableTextMessage);
+                player.send(sendableTextMessage);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -233,7 +253,6 @@ public class Lobby extends TimerTask {
     // This method is called every 1 second(s).
     @Override
     public void run() {
-
         try {
             lock.lock();
             lastTick = System.currentTimeMillis();
@@ -248,38 +267,181 @@ public class Lobby extends TimerTask {
         }
     }
 
+    /**
+     * This method handles the timeout for card picking for both the players and the czar.
+     */
     private void handleCardPicking() {
-        if (getLobbyState() == LobbyState.PLAYERS_PICKING) {
-            boolean allPicked = true;
-            for (Player player : getPlayers()) {
-                assert player.getPlayerState() == PlayerState.PICKING || player.getPlayerState() == PlayerState.PICKED || player.getPlayerState() == PlayerState.CZAR; // Sanity Check
+        try {
+            lock.lock();
+            if (getLobbyState() == LobbyState.PLAYERS_PICKING) {
+                boolean allPicked = true;
+                boolean noOnePicked = true;
 
-                if (player.getPlayerState() == PlayerState.CZAR) continue;
-                if (player.getPlayerState() != PlayerState.PICKING) continue;
+                for (Player player : getPlayers()) {
+                    assert player.isAPlayer(); // Sanity Check
 
-                if ((countdown <= 15 && countdown % 5 == 0) || countdown <= 3) {
-                    String alert = "";
-                    if (countdown <= 3) {
-                        alert = Strings.ALERT;
+                    if (player.getPlayerState() == PlayerState.CZAR) continue;
+                    if (player.getPlayerState() == PlayerState.PICKED) {
+                        noOnePicked = false;
+                        continue;
                     }
-                    player.send(ParseMode.MARKDOWN, "%sYou have **%d** seconds left to pick...", alert, countdown);
+                    if (player.getPlayerState() != PlayerState.PICKING) continue;
 
-                    if (countdown == 1) {
-                        player.send("Dude wtf, play the game you fuck.");
+                    if ((countdown <= 15 && countdown % 5 == 0) || countdown <= 3) {
+                        String alert = "";
+                        if (countdown <= 3) {
+                            alert = Strings.ALERT;
+                        }
+                        player.cooldownMessage(ParseMode.MARKDOWN, "%sYou have **%d** seconds left to pick...", alert, countdown);
+
+                        if (countdown == 1) {
+                            player.send("Dude wtf, play the game you fuck.");
+                        }
                     }
+
+                    allPicked = false;
                 }
+                countdown--;
+                if (allPicked || countdown == 0) {
+                    // This handles at the end of players picking their choices.
+                    handlePlayerPickingEnd(noOnePicked);
+                }
+            } else if (getLobbyState() == LobbyState.CZAR_PICKING) {
 
-                allPicked = false;
             }
-            countdown--;
-            if (allPicked) {
-                // TODO Everyone has picked, stop the countdown and change game state.
-            } else {
-                if (countdown == 0) {
-                    // handle stuff.
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+
+    private void handlePlayerPickingEnd(boolean noOnePicked) {
+        if (noOnePicked) {
+            sendMessageToAll("No one picked. The czar gets 3 points because the players are idiots.");
+            // TODO: Give points to czar.
+            czar.addWin(3);
+            setLobbyState(LobbyState.PRE_ROUND);
+            ignoreTimer = 5;
+
+            if (handleWinCase()) return;
+            return;
+        }
+
+        // CZAR is going to be picking
+        setLobbyState(LobbyState.CZAR_PICKING);
+        countdown = cardPickTime;
+        LinkedList<Pick> picks = new LinkedList<>();
+        for (Player player : players) {
+            if (player.getPlayerState() != PlayerState.PICKED) continue;
+            picks.add(new Pick(player, player.getSelectedCards()));
+        }
+        Collections.shuffle(picks, RANDOM);
+
+        int i = 1;
+
+        // Text Builder
+        StringBuilder sb = new StringBuilder("Cards Picked").append("\n\n");
+        for (Pick pick : picks) {
+            sb.append(String.format("**%d**. ", i));
+            for (Iterator<WhiteCard> iterator = pick.getPicks().iterator(); iterator.hasNext(); ) {
+                WhiteCard whiteCard = iterator.next();
+                sb.append(whiteCard.getText());
+                if (iterator.hasNext()) {
+                    sb.append(" - ");
                 }
+            }
+            sb.append("\n");
+            ++i;
+        }
+
+        // Send the players other than the czar the cards.
+        for (Player player : players) {
+            //if (player.getPlayerState() == PlayerState.CZAR) continue;
+
+            player.pickedCardChoices(ParseMode.MARKDOWN, sb.toString());
+        }
+
+        InlineMenuBuilder builder = InlineMenu.builder(instance.getBot()).forWhom(czar.getChat()).
+                message(SendableTextMessage.plain("Pick the best response:"));
+
+        builder.userFilter(user -> String.valueOf(user.getId()).equals(czar.getId()));
+        InlineMenuRowBuilder<InlineMenuBuilder> rowBuilder = builder.newRow();
+
+        i = 1;
+        for (Pick pick : picks) {
+            if ((i + 1) % 5 == 0) {
+                rowBuilder = rowBuilder.build().newRow();
+            }
+
+            rowBuilder.dummyButton(Strings.getNumber(i)).callback((dummyButton, query) -> handleCzarCardPick(pick, picks)).build();
+        }
+
+        rowBuilder.build().buildMenu().start();
+    }
+
+    /**
+     * Called when the Czar picks a card.
+     *
+     * @param pick
+     */
+    private void handleCzarCardPick(Pick pick, List<Pick> picks) {
+        blackCard.setChoices(pick.getPicks());
+
+        SendablePhotoMessage.builder().photo(new InputFile(blackCard.drawImage(), "newBCard.png")).caption("Winning Card\n" + blackCard.getTextAlternative());
+
+        sendBlackCardToPlayers(blackCard, true, pick);
+
+        // Update the old message to include the names of the people who picked the cards.
+
+        int i = 1;
+        StringBuilder sb = new StringBuilder("Cards Picked").append("\n\n");
+        for (Pick p : picks) {
+            sb.append(String.format("**%d**. ", i));
+            for (Iterator<WhiteCard> iterator = p.getPicks().iterator(); iterator.hasNext(); ) {
+                WhiteCard whiteCard = iterator.next();
+                sb.append(whiteCard.getText());
+                if (iterator.hasNext()) {
+                    sb.append(" - ");
+                }
+            }
+            sb.append(String.format(" %s Picked by __%s__", Strings.RIGHT_ARROW, p.getPlayer().getEffectiveName()));
+            sb.append("\n");
+            ++i;
+        }
+
+        for (Player player : players) {
+            player.pickedCardChoices(ParseMode.MARKDOWN, sb.toString());
+            player.resetPickedCardChoices();
+            player.setPlayerState(PlayerState.WAITING);
+        }
+        //TODO Give point to winner.
+
+        pick.getPlayer().addWin(1);
+
+        if (handleWinCase()) return;
+
+        setLobbyState(LobbyState.PRE_ROUND);
+        ignoreTimer = 2;
+    }
+
+    /**
+     * Checks if a player has won
+     */
+    private boolean handleWinCase() {
+        Player winner = null;
+        for (Player player : players) {
+            if (player.getGameWins() >= getPointsToEnd()) {
+                winner = player;
+                break;
             }
         }
+        if (winner == null) return false;
+
+        sendMessageToAll("%s is the worst person of you all. You should all be ashamed of yourselves. K Bye", winner.getEffectiveName());
+        disband();
+        return true;
     }
 
     private void handlePreRound() {
@@ -292,7 +454,7 @@ public class Lobby extends TimerTask {
             return;
         }
 
-        if (ignoreTimer == 0) {
+        if (ignoreTimer <= 0) {
             startRound();
             ignoreTimer = -1; // At -1 the variable is ignored.
             return;
@@ -320,7 +482,9 @@ public class Lobby extends TimerTask {
             return;
         }
         if (countdown <= 5 || countdown % 5 == 0) {
-            sendMessageToAll("Game starting in %d seconds.", countdown);
+            for (Player player : players) {
+                player.cooldownMessage(ParseMode.NONE, "Game starting in %d seconds.", countdown);
+            }
         }
         countdown--;
         return;
@@ -328,18 +492,20 @@ public class Lobby extends TimerTask {
     }
 
     private void startGame() {
-        Collections.shuffle(players);
+        Collections.shuffle(players, RANDOM);
 
-        setPlayersState(PlayerState.PICKING);
-        ignoreTimer = -1; // Start round instantly
-        startRound();
-    }
-
-    private void endGame() {
-
+        setLobbyState(LobbyState.PRE_ROUND);
     }
 
     private void startRound() {
+        // Reset the stuff.
+        for (Player p : players) {
+            if (!p.isAPlayer()) continue;
+            p.resetCooldownMessage();
+            p.resetPickedCardChoices();
+            p.setPlayerState(PlayerState.PICKING);
+        }
+
         setLobbyState(LobbyState.PLAYERS_PICKING);
 
         czar = pickCzar();
@@ -348,9 +514,8 @@ public class Lobby extends TimerTask {
         countdown = cardPickTime;
 
         pickBlackCard();
-        sendBlackCardToPlayers(blackCard);
+        sendBlackCardToPlayers(blackCard, false, null);
 
-        //TODO Give cards to players.
 
         for (Player player : players) {
             player.send("Round %d started.\n%s: %s is the Czar for this round.", roundStats.size() + 1, Strings.CZAR, czar.getEffectiveName());
@@ -370,16 +535,22 @@ public class Lobby extends TimerTask {
         }
     }
 
-    private void sendBlackCardToPlayers(BlackCard blackCard) {
+    private void sendBlackCardToPlayers(BlackCard blackCard, boolean winning, Pick pick) {
         for (Player player : getPlayers()) {
-            player.send(SendablePhotoMessage.builder().photo(new InputFile(blackCard.drawImage(), "bcard.png")).caption(blackCard.getTextAlternative()).build());
+            SendablePhotoMessage.SendablePhotoMessageBuilder builder = SendablePhotoMessage.builder().photo(new InputFile(blackCard.drawImage(), "bcard.png"));
+            String winningCard = "";
+            String winningPlayer = "";
+            if (winning) {
+                winningCard = "Winning Card\n";
+                winningPlayer = "\nBy " + pick.getPlayer().getEffectiveName();
+            }
+            builder.caption(winningCard + blackCard.getTextAlternative() + winningPlayer);
+
+            player.send(builder.build());
         }
 
     }
 
-    private void setPlayersState(PlayerState state) {
-        players.forEach(p -> p.setPlayerState(state));
-    }
 
     private void pickBlackCard() {
         blackCard = blackCards.poll();
