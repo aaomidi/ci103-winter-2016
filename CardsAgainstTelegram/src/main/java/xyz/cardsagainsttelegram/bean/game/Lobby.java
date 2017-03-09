@@ -59,7 +59,7 @@ public class Lobby extends TimerTask {
 
     @Getter
     @Setter
-    private LinkedList<Player> players = new LinkedList<>();
+    private List<Player> players = Collections.synchronizedList(new LinkedList<>());
 
     // ROUND INFO
     @Getter
@@ -557,8 +557,8 @@ public class Lobby extends TimerTask {
     }
 
     private Player pickCzar() {
-        Player player = players.pop();
-        players.addLast(player);
+        Player player = players.remove(0);
+        players.add(player);
 
         player.setPlayerState(PlayerState.CZAR);
         return player;
