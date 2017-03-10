@@ -56,6 +56,7 @@ public class CardsAgainstTelegram {
         new JoinCommand(this);
         new LeaveCommand(this);
         new NameCommand(this);
+        new ScoreCommand(this);
         new ShareCommand(this);
         new StartCommand(this);
     }
