@@ -1,6 +1,6 @@
 package xyz.cardsagainsttelegram.engine.commands;
 
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import xyz.cardsagainsttelegram.CardsAgainstTelegram;
 import xyz.cardsagainsttelegram.bean.command.Command;
@@ -15,23 +15,26 @@ public class ScoreCommand extends Command {
 
     @Override
     public boolean execute(Player player, CommandMessageReceivedEvent event) {
-        if (player.hasLobby()) {
-            Lobby lobby = player.getLobby();
-            LobbyState lobbyState = lobby.getLobbyState();
-            if (lobbyState == LobbyState.PRE_ROUND || lobbyState == LobbyState.PLAYERS_PICKING || lobbyState == LobbyState.CZAR_PICKING) {
-
-                StringBuilder sb = new StringBuilder();
-                for (Player players : lobby.getPlayers())
-                    sb.append(String.format("*%s* - %s", players.getName(), players.getGameWins())).append("\n");
-
-                event.getChat().sendMessage(SendableTextMessage.markdown(sb.toString()).build());
-                return true;
-            } else
-                event.getChat().sendMessage("Game not started or found.");
+        if (!player.hasLobby()) {
+            player.send("Lobby not started or found.");
             return true;
-        } else
-            event.getChat().sendMessage("Lobby not started or found.");
+        }
+
+        Lobby lobby = player.getLobby();
+        LobbyState lobbyState = lobby.getLobbyState();
+
+        if (lobbyState != LobbyState.PRE_ROUND && lobbyState != LobbyState.PLAYERS_PICKING && lobbyState != LobbyState.CZAR_PICKING) {
+            player.send("Game not started or found.");
+            return true;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Player players : lobby.getPlayers())
+            sb.append(String.format("*%s* - %s", players.getName(), players.getGameWins())).append("\n");
+
+        player.send(ParseMode.MARKDOWN, sb.toString());
         return true;
+
     }
 
 }
