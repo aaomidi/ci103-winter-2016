@@ -140,6 +140,7 @@ public class Player {
     }
 
     public void reset() {
+        setPlayerState(PlayerState.NONE);
         resetPickedCardChoices();
         resetCooldownMessage();
         lobby = null;
@@ -184,7 +185,6 @@ public class Player {
         LobbyResult result = LobbyRegistry.leaveLobby(this, lobby);
         this.send(Strings.getString(result));
         if (result == LobbyResult.SUCCESS) {
-            setPlayerState(PlayerState.NONE);
             reset();
         }
         return result == LobbyResult.SUCCESS;

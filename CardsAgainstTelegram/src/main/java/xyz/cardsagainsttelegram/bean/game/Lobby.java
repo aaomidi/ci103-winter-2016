@@ -237,7 +237,7 @@ public class Lobby extends TimerTask {
         players.clear();
         setLobbyState(LobbyState.DISBANDED);
         for (Player player : players) {
-            player.setLobby(null);
+            player.reset();
         }
         // End Game
 
