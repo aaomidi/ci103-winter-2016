@@ -4,10 +4,9 @@ import lombok.Getter;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 import xyz.cardsagainsttelegram.presentation.Presentation;
+import xyz.cardsagainsttelegram.presentation.engine.handlers.CommandRegistry;
 
-/**
- * Created by amir on 3/15/2017.
- */
+
 public abstract class Command implements Comparable<Command> {
 
     protected final Presentation instance;
@@ -21,7 +20,7 @@ public abstract class Command implements Comparable<Command> {
         this.name = name;
         this.description = description;
 
-        //CommandRegistry.registerCommand(this);
+        CommandRegistry.registerCommand(this);
     }
 
 
