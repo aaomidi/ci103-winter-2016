@@ -109,7 +109,7 @@ public class BlackCard implements Card {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return new BlackCard(text, empty);
     }
 

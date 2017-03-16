@@ -424,6 +424,12 @@ public class Lobby extends TimerTask {
 
         setLobbyState(LobbyState.PRE_ROUND);
         ignoreTimer = 2;
+
+        try {
+            roundStats.add(new RoundStats(pick.getPlayer(), blackCard.clone(), pick.getPicks()));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
