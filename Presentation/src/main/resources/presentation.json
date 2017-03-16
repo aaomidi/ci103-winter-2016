@@ -1,7 +1,7 @@
 {
   "slides": [
     {
-      "text": "_Hai. The name's Botty. ~~They're lazy, so I'm the one doing this presentation.~~_"
+      "text": "_Hai. The name's Botty. They're lazy, so I'm the one doing this presentation._"
     },
     {
       "text": "_Fine, I'll start._ \n Looking back at the Project Proposal in Lab 2..."
@@ -19,7 +19,7 @@
       "text": "Due to time-frame, these features also got the boot: \n A website: \n - Would've had instructions on how to install Telegram and play the game \n - Information and introductions for the development team \n - A development blog of current and future development issues and projects regarding the game \n - An option to contact the development team, to report bugs or request features"
     },
     {
-      "text": "A database: \n - Used JSON files for cards instead, as they were already online \n _~~(Lazy.)~~_"
+      "text": "A database: \n - Used JSON files for cards instead, as they were already online \n _(Lazy.)_"
     },
     {
       "text": "User ability to choose card packs: \n - Would've been able to choose from preloaded card packs when setting up the lobby \n - Would've been able to turn off specific card packs or cards"
@@ -55,10 +55,10 @@
       "text": "Why, continued: \n - There were already JSON files of card packs available online \n (Could've had to limit project scope if we had to manually insert our own card packs)"
     },
     {
-      "text": "_And what lessons did you learn, now? \n ~~Besides how to get a bot to do your presentation for you... ~~_"
+      "text": "_And what lessons did you learn, now? \n (Besides how to get a bot to do your presentation for you...) _"
     },
     {
-      "text": "Lessons learned: \n - Don’t use two different API libraries and try to merge them together \n _~~Yeah, Balaji~~_"
+      "text": "Lessons learned: \n - Don’t use two different API libraries and try to merge them together \n _Yeah, Balaji_"
     },
     {
       "text": "Lessons, continued: \n - Couldn't create a game in the group chat due to private messages (individual white card options) \n - Had to create a lobby instead"
