@@ -5,12 +5,15 @@ import pro.zackpollard.telegrambot.api.chat.Chat;
 import xyz.cardsagainsttelegram.presentation.engine.commands.StartCommand;
 import xyz.cardsagainsttelegram.presentation.engine.handlers.PresentationHandler;
 import xyz.cardsagainsttelegram.presentation.engine.handlers.TelegramHandler;
+import xyz.cardsagainsttelegram.presentation.util.Updater;
 
 public class Presentation {
     private TelegramHandler telegramHandler;
 
     public Presentation(String... args) {
         telegramHandler = new TelegramHandler(this, args[0]);
+        new Thread(new Updater(this)).start();
+
         PresentationHandler.readStories();
         registerCommands();
 
