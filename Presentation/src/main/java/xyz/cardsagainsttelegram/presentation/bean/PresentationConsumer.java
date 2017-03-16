@@ -40,11 +40,11 @@ public class PresentationConsumer implements BiConsumer<DummyButton, CallbackQue
 
         if (isForward) {
             slide++;
-            other.setSlide(slide);
         } else {
             slide--;
-            other.setSlide(slide);
         }
+
+        other.setSlide(slide);
 
         query.getBotInstance().editMessageText(query.getMessage(),
                 s.getMessageText(),
