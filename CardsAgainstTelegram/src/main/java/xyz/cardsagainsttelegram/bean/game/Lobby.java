@@ -301,7 +301,9 @@ public class Lobby extends TimerTask {
 
                     allPicked = false;
                 }
+
                 countdown--;
+                System.out.printf("%s %d\n", Boolean.toString(allPicked), countdown);
                 if (allPicked || countdown == 0) {
                     // This handles at the end of players picking their choices.
                     handlePlayerPickingEnd(noOnePicked);
@@ -426,8 +428,8 @@ public class Lobby extends TimerTask {
         ignoreTimer = 2;
 
         try {
-            roundStats.add(new RoundStats(pick.getPlayer(), blackCard.clone(), pick.getPicks()));
-        } catch (CloneNotSupportedException e) {
+            roundStats.add(new RoundStats(pick.getPlayer(), (BlackCard) blackCard.clone(), pick.getPicks()));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
