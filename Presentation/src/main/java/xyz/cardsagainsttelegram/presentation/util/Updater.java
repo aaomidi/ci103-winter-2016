@@ -23,10 +23,15 @@ public class Updater implements Runnable {
             File file = new File("update_available_pres");
             if (file.exists()) {
                 System.out.println("File existed. Attempting to restart!");
-                try {
-                    instance.tellTelegram("Bot restarted.");
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                boolean res = file.delete();
+                if (res) {
+
+                    try {
+                        instance.tellTelegram("Bot restarted.");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
                 }
             }
         }
