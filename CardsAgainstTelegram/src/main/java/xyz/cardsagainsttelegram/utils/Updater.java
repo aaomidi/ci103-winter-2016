@@ -20,7 +20,7 @@ public class Updater implements Runnable {
                 e.printStackTrace();
             }
 
-            File file = new File("update_available");
+            File file = new File("update_available_cah");
             if (file.exists()) {
                 System.out.println("File existed. Attempting to restart!");
                 boolean res = file.delete();
