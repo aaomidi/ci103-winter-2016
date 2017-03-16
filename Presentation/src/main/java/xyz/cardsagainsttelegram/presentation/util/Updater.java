@@ -25,12 +25,12 @@ public class Updater implements Runnable {
                 System.out.println("File existed. Attempting to restart!");
                 boolean res = file.delete();
                 if (res) {
-
                     try {
                         instance.tellTelegram("Bot restarted.");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+
                     System.exit(0);
                 }
             }
