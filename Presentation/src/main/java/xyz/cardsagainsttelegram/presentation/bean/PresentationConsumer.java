@@ -28,6 +28,7 @@ public class PresentationConsumer implements BiConsumer<DummyButton, CallbackQue
     public void accept(DummyButton db, CallbackQuery cq) {
         MessageCallbackQuery query = (MessageCallbackQuery) cq;
         Slide s;
+        System.out.println(slide);
         if (isForward) {
             s = PresentationHandler.getSlide(slide + 1);
         } else {
