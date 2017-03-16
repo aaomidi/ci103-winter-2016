@@ -1,6 +1,7 @@
 package xyz.cardsagainsttelegram.presentation;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.Chat;
 import xyz.cardsagainsttelegram.presentation.engine.commands.StartCommand;
 import xyz.cardsagainsttelegram.presentation.engine.handlers.PresentationHandler;
 import xyz.cardsagainsttelegram.presentation.engine.handlers.TelegramHandler;
@@ -34,5 +35,10 @@ public class Presentation {
 
     private void registerCommands() {
         new StartCommand(this);
+    }
+
+    public void tellTelegram(String msg) {
+        Chat chat = getBot().getChat("-1001081498579");
+        chat.sendMessage(msg);
     }
 }
