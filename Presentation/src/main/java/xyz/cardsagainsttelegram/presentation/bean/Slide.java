@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 
+// The slide object
 @RequiredArgsConstructor
 public class Slide {
     private final String text;

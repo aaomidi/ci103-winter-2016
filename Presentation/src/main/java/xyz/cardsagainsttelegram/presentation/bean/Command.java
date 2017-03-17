@@ -23,7 +23,13 @@ public abstract class Command implements Comparable<Command> {
         CommandRegistry.registerCommand(this);
     }
 
-
+    /**
+     * Executes a command
+     *
+     * @param user
+     * @param event
+     * @return
+     */
     public abstract boolean execute(User user, CommandMessageReceivedEvent event);
 
     @Override

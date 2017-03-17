@@ -10,6 +10,11 @@ import xyz.cardsagainsttelegram.presentation.util.Updater;
 public class Presentation {
     private TelegramHandler telegramHandler;
 
+    /**
+     * Entry point to Presentation class
+     *
+     * @param args startup args
+     */
     public Presentation(String... args) {
         telegramHandler = new TelegramHandler(this, args[0]);
         new Thread(new Updater(this)).start();
@@ -26,20 +31,33 @@ public class Presentation {
         }
     }
 
+    /**
+     * Main entry point
+     * @param args startup args
+     */
     public static void main(String... args) {
         new Presentation(args);
-
-
     }
 
+    /**
+     * Telegram Bot instance
+     * @return null if not initiated
+     */
     public TelegramBot getBot() {
         return telegramHandler.getBot();
     }
 
+    /**
+     * Command registeration system
+     */
     private void registerCommands() {
         new StartCommand(this);
     }
 
+    /**
+     * Messages the team with message.
+     * @param msg
+     */
     public void tellTelegram(String msg) {
         Chat chat = getBot().getChat("-1001081498579");
         chat.sendMessage(msg);

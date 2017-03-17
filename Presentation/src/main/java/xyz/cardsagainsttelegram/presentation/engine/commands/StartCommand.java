@@ -11,7 +11,9 @@ import xyz.cardsagainsttelegram.presentation.bean.Command;
 import xyz.cardsagainsttelegram.presentation.bean.PresentationConsumer;
 import xyz.cardsagainsttelegram.presentation.engine.handlers.PresentationHandler;
 
-
+/**
+ * Command that starts the presentation.
+ */
 public class StartCommand extends Command {
     public StartCommand(Presentation instance) {
         super(instance, "start", "Starts the bot");
