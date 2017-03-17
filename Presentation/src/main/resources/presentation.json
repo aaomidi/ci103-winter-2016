@@ -1,37 +1,88 @@
 {
   "slides": [
     {
-      "text": "Hai. Name's Botty. They're lazy, so I'm the one doing this presentation."
+      "text": "_Hai. The name's Botty. They're lazy, so I'm the one doing this presentation._"
     },
     {
-      "text": "Looking back at the Project Proposal in Lab 2..."
+      "text": "_Fine, I'll start._ \n          Looking back at the Project Proposal in Lab 2..."
     },
     {
-      "text": "Scope changes: Nothing taken out of 'Critical' priority, only out of 'Nice to Have' priority. \n So the project was technically within the anticipated scope. (Or so they say.)"
+      "text": "Scope changes: Nothing taken out of 'Critical' priority, only out of 'Nice to Have' priority. \n          So the project was technically within the anticipated scope. _(Or so they say.)_"
     },
     {
-      "text": "Some changes were time-frame related, but others were merely user-experience related."
+      "text": "Some changes were time-frame related, but others were merely user-experience related. \n          For an example of the latter: \n                    No leaderboard: Originally meant to appear after every turn, but now only available after typing in a command"
     },
     {
-      "text": "For example: no leaderboard, "
+      "text": "Also, no white card images: Originally meant to be distributed like black cards, but ten of them would clutter the screen. "
     },
     {
-      "text": ""
+      "text": "Due to time-frame, these features also got the boot: \n          A website: \n                    - Would've had instructions on how to install Telegram and play the game \n                    - Information and introductions for the development team \n                    - A development blog of current and future development issues and projects regarding the game \n                    - An option to contact the development team, to report bugs or request features"
     },
     {
-      "text": ""
+      "text": "A database: \n          - Used JSON files for cards instead, as they were already online \n          _(Lazy.)_"
     },
     {
-      "text": ""
+      "text": "User ability to choose card packs: \n          - Would've been able to choose from preloaded card packs when setting up the lobby \n          - Would've been able to turn off specific card packs or cards"
     },
     {
-      "text": ""
+      "text": "A child-friendly version: \n          - Removal of more mature cards \n          _(Good riddance. This isn't Apples to Apples.)_"
     },
     {
-      "text": ""
+      "text": "A global player management system: \n          - Would've allowed creating, finding, and joining public games, along with matchmaking for players"
     },
     {
-      "text": ""
+      "text": "_(Seriously, how many more do you have?)_"
+    },
+    {
+      "text": "Custom keyboard: \n          - Used in-line buttons instead \n          - In-line is easier to navigate, as users don't have to scroll through 10 options on a keyboard"
+    },
+    {
+      "text": "How the keyboard looked: https://i.imgur.com/hDQqjpn.png"
+    },
+    {
+      "text": "And that's it for scope changes."
+    },
+    {
+      "text": "_(Thank god)_"
+    },
+    {
+      "text": "_And how did they get my wonderful self into existence, on-time and on-objective?_ \n          _Glad you asked._"
+    },
+    {
+      "text": "Why our project met its stated objectives: \n          - We had experienced people on our team (read: Amir) who accurately estimated a feasible time and scope of the project from the beginning \n          - We were realistic with what was possible in the time frame \n          - Team members' familiarity with Java and Telegram"
+    },
+    {
+      "text": "Why, continued: \n          - The development team used abstract and interface classes through Java so each member could complete their tasks without having to wait on each other \n          - I.e. Parallel development and deployment"
+    },
+    {
+      "text": "Why, continued: \n          - There were already JSON files of card packs available online \n          - (Could've had to limit project scope if we had to manually insert our own card packs)"
+    },
+    {
+      "text": "And our good ol' gantt chart: https://i.imgur.com/BVlUef5.png"
+    },
+    {
+      "text": "_And what lessons did you learn, now? \n          (Besides how to get a bot to do your presentation for you...) _"
+    },
+    {
+      "text": "Lessons learned: \n          - Don’t use two different API libraries and try to merge them together \n          _Yeah, Balaji_"
+    },
+    {
+      "text": "Lessons, continued: \n          - Couldn't create a game in the group chat due to private messages (individual white card options) \n          - Had to create a lobby instead"
+    },
+    {
+      "text": "Lessons, continued: \n          - Learned to discuss deadlines and setbacks honestly with group members \n          - If someone was behind, they admitted it and other members helped catch them up"
+    },
+    {
+      "text": "Lessons, continued: \n          - Race conditions can wreak havoc on your logic"
+    },
+    {
+      "text": "Lessons, continued: \n          - Project deployment  \n          - Auto-deployment is required when you have one platform with multiple developers"
+    },
+    {
+      "text": "_And now, what you've been waiting for._"
+    },
+    {
+      "text": "_Let's play a game._\n Message @CardsAgainstTelegram_Bot"
     }
   ]
 }
